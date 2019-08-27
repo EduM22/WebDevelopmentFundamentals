@@ -1,4 +1,4 @@
-const dummyData = require('./src/dummy-data')
+const dummyData = require('./dummy-data')
 const express = require('express')
 const expressHandlebars = require('express-handlebars')
 
