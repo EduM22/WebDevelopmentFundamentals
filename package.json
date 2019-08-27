@@ -1,0 +1,23 @@
+{
+  "name": "johantornqvistblog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EduM22/WebDevelopmentFundamentals.git"
+  },
+  "author": "Johan Törnqvist",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EduM22/WebDevelopmentFundamentals/issues"
+  },
+  "homepage": "https://github.com/EduM22/WebDevelopmentFundamentals#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0"
+  }
+}
