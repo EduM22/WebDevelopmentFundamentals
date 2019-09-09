@@ -6,8 +6,8 @@ exports.humans = [{
     name: "Bob"
   }]
   
-  exports.pets = [{
+exports.pets = [{
     id: 0,
     humanId: 1,
     name: "Catty"
-  }]
+}]

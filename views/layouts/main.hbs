@@ -1,11 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
+    <link rel="stylesheet" href="style/main.css">
+    {{#if title}}
+    <title>| Johan.Blog - {{ title }} |</title>
+    {{else}}
+    <title>| Johan.Blog |</title>
+    {{/if}}
     <meta charset="UTF-8">
-    <title>Hello</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <h1>My Website</h1>
-    {{{body}}}
+    <div class="container">
+      <header class="header">
+        <a href="/" class="logo navbar-brand mr-2">Johan.Blog</a>
+        <input class="menu-btn" type="checkbox" id="menu-btn" />
+        <label class="menu-icon" for="menu-btn"><span class="nav-icon"></span></label>
+        <ul class="menu">
+          <li class="nav-item"><a href="/about">About</a></li>
+          <li class="nav-item"><a href="/portfolio">Github / Portfolio</a></li>
+          <li class="nav-item"><a href="/contact">Contact</a></li>
+          <li class="nav-item"><a href="/donations">Support</a></li>
+          <li class="nav-item">
+            <form action="/search" method="get" class="form-nav">
+              <div class="input-group input-inline">
+                <input class="form-input" type="text" placeholder="search" name="q">
+                <button class="btn btn-primary input-group-btn">Search</button>
+              </div>
+            </form>
+          </li>
+        </ul>
+      </header>
+
+      <div class="main-content">
+        {{{body}}}
+      </div>
+
+
+<!--
+      <footer class="navbar">
+        <section class="navbar-section">
+          <ul class="nav">
+            <li class="nav-item"><a href="/about" class="btn btn-link">About</a></li>
+            <li class="nav-item"><a href="/portfolio" class="btn btn-link">Github / Portfolio</a></li>
+            <li class="nav-item"><a href="/contact" class="btn btn-link">Contact</a></li>
+            <li class="nav-item"><a href="/donations" class="btn btn-link">Support</a></li>
+            <li class="nav-item"><a href="/posts" class="btn btn-link">Posts</a></li>
+            <li class="nav-item"><a href="/legal/tos" class="btn btn-link">tos</a></li>
+            <li class="nav-item"><a href="/legal/privacy" class="btn btn-link">Privacy</a></li>
+            <li class="nav-item"><a href="/api" class="btn btn-link">Api</a></li>
+          </ul>
+        </section>
+      </footer> -->
+    </div>
   </body>
 </html>

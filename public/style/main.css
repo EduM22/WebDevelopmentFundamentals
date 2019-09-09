@@ -1,0 +1,160 @@
+a {
+    color: #000;
+}
+
+.main-content {
+    padding-top: 100px;
+}
+
+.header {
+    margin-left: -10px;
+    background-color: #fff;
+    box-shadow: 1px 1px 4px 0 rgba(0,0,0,.1);
+    position: fixed;
+    width: 100%;
+    z-index: 3;
+}
+  
+.header ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: hidden;
+    background-color: #fff;
+}
+  
+.header li a {
+    display: block;
+    padding: 20px 20px;
+    border-right: 1px solid #f4f4f4;
+    text-decoration: none;
+}
+  
+.header li a:hover,
+.header .menu-btn:hover {
+    background-color: #f4f4f4;
+}
+
+.header .logo {
+    display: block;
+    float: right;
+    font-size: 2em;
+    padding: 10px 20px;
+    text-decoration: none;
+    padding-right: 45%;
+}
+
+.header .form-nav {
+    padding-left: 1.5%;
+    margin-bottom: 20px;
+}
+  
+  /* menu */
+  
+.header .menu {
+    clear: both;
+    max-height: 0;
+    transition: max-height .2s ease-out;
+}
+  
+  /* menu icon */
+  
+.header .menu-icon {
+    cursor: pointer;
+    float: left;
+    padding: 28px 20px;
+    position: relative;
+    user-select: none;
+}
+  
+.header .menu-icon .nav-icon {
+    background: #333;
+    display: block;
+    height: 2px;
+    position: relative;
+    transition: background .2s ease-out;
+    width: 18px;
+}
+  
+.header .menu-icon .nav-icon:before,
+.header .menu-icon .nav-icon:after {
+    background: #333;
+    content: '';
+    display: block;
+    height: 100%;
+    position: absolute;
+    transition: all .2s ease-out;
+    width: 100%;
+}
+  
+.header .menu-icon .nav-icon:before {
+    top: 5px;
+}
+  
+.header .menu-icon .nav-icon:after {
+    top: -5px;
+}
+  
+  /* menu btn */
+  
+.header .menu-btn {
+    display: none;
+}
+  
+.header .menu-btn:checked ~ .menu {
+    max-height: 50%;
+}
+  
+.header .menu-btn:checked ~ .menu-icon .nav-icon {
+    background: transparent;
+}
+  
+.header .menu-btn:checked ~ .menu-icon .nav-icon:before {
+    transform: rotate(-45deg);
+    top:0;
+}
+  
+.header .menu-btn:checked ~ .menu-icon .nav-icon:after {
+    transform: rotate(45deg);
+    top:0;
+}
+
+@media(max-width: 510px) {
+    .header .logo {
+        padding-right: 30%;
+    }
+
+    .header .form-nav {
+        padding-left: 5%;
+        margin-bottom: 20px;
+    }
+}
+
+@media(max-width: 340px) {
+    .header .logo {
+        padding-right: 10%;
+    }
+}
+
+.card {
+    padding: 10px;
+    margin: 5px;
+    border: 5px solid #fcfcfc;
+    border-radius: 25px;
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+    border: 2px solid #cacdd1;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+}
+
+footer .navbar-section {
+    padding-left: 50%;
+}
