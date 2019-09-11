@@ -1,0 +1,27 @@
+<a class="btn btn-primary" href="#example-modal-1">Write a guestbook entrie</a>
+
+<div class="modal" id="example-modal-1"><a class="modal-overlay" href="#modals" aria-label="Close"></a>
+    <div class="modal-container" role="document">
+        <div class="modal-header"><a class="btn btn-clear float-right" href="#modals" aria-label="Close"></a>
+            <div class="modal-title h5">Modal title</div>
+        </div>
+        <div class="modal-body">
+            <div class="content">
+                <form action="" method="POST">
+                    <input type="text" name="name" required minlength="3" maxlength="250">
+                    <input type="submit" placeholder="upload">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{#if rows.length}}
+    {{#each rows}}
+        <h2>{{name}}</h2>
+        <p>{{content}}</p>
+    {{/each}}
+{{else}}
+    <h1>No guestbook enteries</h1>
+    <p>Be the first to post in the guestbook</p>
+{{/if}}

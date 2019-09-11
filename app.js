@@ -6,9 +6,12 @@ var helmet = require('helmet')
 const search = require('./search')
 var db = require('./db.js')
 const session = require('express-session')
+var csurf = require('csurf')
 
 const port = 8080
 const app = express()
+
+//var csrfProtection = csurf({ cookie: true })
 
 app.engine('hbs', expressHandlebars({
     defaultLayout: 'main.hbs'
@@ -31,24 +34,37 @@ app.use(bodyParser.urlencoded({
     extended: false
 }))
 
-app.get('/', function(req, res) {
+app.get('/', function(request, response) {
     const model = {
-        title: 'home'
+        title: 'Home',
     }
-   
-    res.render('home.hbs', model)
+
+    db.all('SELECT * FROM Posts DESC LIMIT 1', (err, row) => {
+        if (err) {
+            console.log(err.message)
+            response.send(500)
+        } else {
+            if (row.length > 0) {
+                model.push(row)
+                response.render('home.hbs', model)
+            } else {
+                response.render('home.hbs', model)
+        
+            }
+        }
+    });
 })
 
-app.get('/about', function(req, res) {
+app.get('/about', function(request, res) {
     res.render('about.hbs')
 })
 
-app.get('/contact', function(req, res) {
+app.get('/contact', function(request, res) {
     res.render('contact.hbs')
 })
 
-app.get('/search', function(req, res) {
-    const searchQuestion = req.query.q
+app.get('/search', function(request, res) {
+    const searchQuestion = request.query.q
 
     const model = {
         humans: search.humans
@@ -57,96 +73,155 @@ app.get('/search', function(req, res) {
     res.render("search.hbs", model)
 })
 
-app.get('/portfolio', function(req, res) {
-    res.send('portfolio')
+app.get('/portfolio', function(request, response) {
+    response.send('portfolio')
 })
 
-app.get('/post/:id', function(req, res) {
-    res.send(req.params)
+app.get('/guestbook', function(request, response) {
+    //get all guestbook
+    db.all('SELECT * FROM Guestbook', (err, rows) => {
+        if (err) {
+            console.log(err.message)
+            response.send(500)
+        } else {
+            if (rows.length > 0) {
+                const model = {
+                    rows
+                }
+                response.render('guestbook.hbs', model)
+            } else {
+                response.render('guestbook.hbs')
+            }
+        }
+    });
+
 });
 
-app.get('/post', function(req, res) {
-    res.redirect('/posts')
+app.get('/post/:id', function(request, response) {
+    response.send(request.params)
 });
 
-app.get('/posts', function(req, res) {
-    res.send({'posts': 'allposts'})
+app.get('/post', function(request, response) {
+    response.redirect('/posts')
 });
 
-app.get('/new/post', isAuthenticated, function(req, res) {
-    res.send('post')
+app.get('/posts/:page', function(request, response) {
+    response.send({'posts': 'allposts'})
+});
+
+app.get('/new/post', isAuthenticated, function(request, response) {
+    response.render('new_post.hbs')
 })
 
-app.post('/new/post', isAuthenticated, function(req, res) {
-    res.send('post')
+app.post('/new/post', isAuthenticated, function(request, response) {
+    const content = request.body.content
+    const slug = request.body.slug
+    const category = request.body.category
+
+    if (content == '') {
+
+    }
+
+    if (slug == '') {
+
+    }
+
+    if (category == '') {
+
+    }
+
+
+    if (content && slug && category) {
+
+        db.run('INSERT INTO Posts ', [username, hash, Date.now()], (err) => {
+            if (err) {
+                console.log(err.message)
+                response.redirect('/')
+            } else {
+                response.status(200).send({'id': this.lastID})
+            }
+        });
+        
+    } else {
+
+    }
+
+    response.send('post')
 })
 
-app.get('/admin', isAuthenticated, function(req, res) {
-    res.send('look at me')
+app.get('/admin', isAuthenticated, function(request, response) {
+    response.send('look at me')
 });
 
-app.get('/login', function(req, res) {
-    res.render('login.hbs', { layout: 'clean.hbs' })
+app.get('/login', alreadyAuthenticated, function(request, response) {
+    response.render('login.hbs', { layout: 'clean.hbs' })
 })
 
-app.post('/login', function(req, res) {
-    const username = req.body.username
-    const password = req.body.password
+app.post('/login', alreadyAuthenticated, function(request, response) {
+    const username = request.body.username
+    const password = request.body.password
 
     if(username && password) {
 
-        db.all('SELECT * FROM Users WHERE username = ?', [username], (err, rows) => {
-            console.log(rows);
-            if (rows.length > 0) {
-                bcrypt.compare(password, rows[0].password, function(err, results) {
-                    if (err) {
-                        console.log('err')
-                    } else {
-                        if (results) {
-                            console.log('jippi')
-                            req.session.authenticated = true
-                            res.redirect('/admin')
-                        } else {
-                            console.log('wrong password')
-                        }
-                    }
-                });
-
+        db.all('SELECT * FROM Users WHERE username = ?', [username], (err, row) => {
+            if (err) {
+                console.log(err.message)
+                response.send(500)
             } else {
-                res.send({}); // failed, so return an empty object instead of undefined
+                if (row.length > 0) {
+                    bcrypt.compare(password, row[0].password, function(err, results) {
+                        if (err) {
+                            console.log(err.message)
+                            response.send(500)
+                        } else {
+                            if (results) {
+                                console.log('jippi')
+                                request.session.authenticated = true
+                                request.session.id = row.uid
+                                response.redirect('/admin')
+                            } else {
+                                console.log('wrong password')
+                                response.send('wrong password')
+                            }
+                        }
+                    });
+    
+                } else {
+                    response.send({}); // failed, so return an empty object instead of undefined
+                }
             }
         });
 
     } else {
         // no username or password
-        res.render('login.hbs', { layout: 'clean.hbs' })
+        response.render('login.hbs', { layout: 'clean.hbs' })
     }
 })
 
 /*
 
-app.get('/signup', function(req, res) {
-    res.render('signup.hbs', { layout: 'clean.hbs' })
+app.get('/signup', function(request, response) {
+    response.render('signup.hbs', { layout: 'clean.hbs' })
 })
 
-app.post('/signup', function(req, res) {
-    const username = req.body.username
+app.post('/signup', function(request, response) {
+    const username = request.body.username
 
-    if(username && req.body.password) {
+    if(username && request.body.password) {
 
-        bcrypt.hash(req.body.password, 10, function(err, hash) {
+        bcrypt.hash(request.body.password, 10, function(err, hash) {
             if (err) {
                 console.log(err.message)
-                res.status(400).send({'error': 'err'})
+                response.status(400).send({'error': 'err'})
             } else {
                 console.log(hash)
 
                 db.run('INSERT INTO Users (username, password, created_date) VALUES (?, ?, ?)', [username, hash, Date.now()], (err) => {
                     if (err) {
                         console.log(err.message)
-                        res.redirect('/')
+                        response.redirect('/')
                     } else {
-                        res.status(200).send({'id': this.lastID})
+                        response.status(200).send({'id': this.lastID})
                     }
                 });
 
@@ -155,28 +230,41 @@ app.post('/signup', function(req, res) {
 
     } else {
         // no username or password
-        res.render('signup.hbs', { layout: 'clean.hbs' })
+        response.render('signup.hbs', { layout: 'clean.hbs' })
     }
 })
 
 */
 
-app.get('/logout', isAuthenticated, function(req, res) {
-    req.session.authenticated = false
-    res.redirect('/')
+app.get('/logout', isAuthenticated, function(request, response) {
+    request.session.authenticated = false
+    request.session.id = null
+    response.redirect('/')
 });
 
 
-app.use(function(req, res, next) {
-    res.status(404).render('404.hbs', { layout: 'clean.hbs' })
+app.use(function(request, response, next) {
+    response.status(404).render('404.hbs', { layout: 'clean.hbs' })
 });
 
-function isAuthenticated(req, res, next) {
-    if (req.session.authenticated) {
+app.use(function(request, response, next) {
+    response.status(500).render('500.hbs', { layout: 'clean.hbs' })
+});
+
+function isAuthenticated(request, response, next) {
+    if (request.session.authenticated) {
         return next();
     }
 
-    res.redirect('/')
+    response.redirect('/')
+}
+
+function alreadyAuthenticated(request, response, next) {
+    if (request.session.authenticated) {
+        return response.redirect('/admin')
+    } else {
+        return next();
+    }
 }
 
 

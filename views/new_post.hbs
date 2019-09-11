@@ -1,0 +1,17 @@
+{{#if error}}
+    <p>{{ error }}</p>    
+{{/if}}
+<div class="form-group">
+    <form method="POST" action="/login">
+        <label class="form-label" for="input-slug">Post - slug</label>
+        <input class="form-input" type="text" id="input-slug" placeholder="Text" name="slug" maxlength="40" required>
+
+        <label class="form-label" for="input-username">Post - content</label>
+        <input class="form-input" type="text" id="input-username" placeholder="Text" name="content" required>
+
+        <label class="form-label" for="input-password">Post - category</label>
+        <input class="form-input" type="password" id="input-password" placeholder="Category" name="category" required>
+
+        <input class="form-submit" type="submit" placeholder="Post">
+    </form>
+</div>
