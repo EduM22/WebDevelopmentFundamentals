@@ -1,6 +1,6 @@
 var sqlite3 = require('sqlite3').verbose()
 
-let db =  new sqlite3.Database('db-blog.db', (error) => {
+let db = new sqlite3.Database('db-blog.db', (error) => {
     if (error) {
         console.log(error.message)
     } else {
@@ -72,9 +72,6 @@ let db =  new sqlite3.Database('db-blog.db', (error) => {
                 console.log(error)
             }
         });
-
-
-
     }
 });
 

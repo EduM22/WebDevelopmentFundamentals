@@ -97,7 +97,7 @@ app.get('/guestbook', function(request, response) {
 
 });
 
-app.get('/post/:id', function(request, response) {
+app.get('/post/:slug', function(request, response) {
     response.send(request.params)
 });
 
@@ -110,7 +110,7 @@ app.get('/posts/:page', function(request, response) {
 });
 
 app.get('/new/post', isAuthenticated, function(request, response) {
-    response.render('new_post.hbs')
+    response.render('new_post.hbs', { layout: 'clean.hbs' })
 })
 
 app.post('/new/post', isAuthenticated, function(request, response) {
@@ -150,7 +150,7 @@ app.post('/new/post', isAuthenticated, function(request, response) {
 })
 
 app.get('/admin', isAuthenticated, function(request, response) {
-    response.send('look at me')
+    response.render('admin.hbs')
 });
 
 app.get('/login', alreadyAuthenticated, function(request, response) {
@@ -158,43 +158,82 @@ app.get('/login', alreadyAuthenticated, function(request, response) {
 })
 
 app.post('/login', alreadyAuthenticated, function(request, response) {
-    const username = request.body.username
-    const password = request.body.password
+    const validationErrors = []
 
-    if(username && password) {
+    const valdateUsername = request.body.username
+    const validatePassword = request.body.password
 
-        db.all('SELECT * FROM Users WHERE username = ?', [username], (err, row) => {
-            if (err) {
-                console.log(err.message)
-                response.send(500)
-            } else {
-                if (row.length > 0) {
-                    bcrypt.compare(password, row[0].password, function(err, results) {
-                        if (err) {
-                            console.log(err.message)
-                            response.send(500)
-                        } else {
-                            if (results) {
-                                console.log('jippi')
-                                request.session.authenticated = true
-                                request.session.id = row.uid
-                                response.redirect('/admin')
-                            } else {
-                                console.log('wrong password')
-                                response.send('wrong password')
-                            }
-                        }
-                    });
-    
-                } else {
-                    response.send({}); // failed, so return an empty object instead of undefined
-                }
-            }
-        });
+    if (validatePassword === "" || valdateUsername === "") {
+        validationErrors.push("No password/username")
 
+        const model = {
+            validationErrors,
+            username: valdateUsername,
+            layout: 'clean.hbs'
+        }
+        
+        response.render('login.hbs', model)
     } else {
-        // no username or password
-        response.render('login.hbs', { layout: 'clean.hbs' })
+        if(validatePassword.length >= 3) {
+
+            db.all('SELECT * FROM Users WHERE username = ?', [valdateUsername], (err, row) => {
+                if (err) {
+                    console.log(err.message)
+
+                    const model = {
+                        error: "Something is wrong with our system. please check back in later"
+                    }
+                    response.render('500.hbs', model)
+                } else {
+                    if (row.length > 0) {
+                        bcrypt.compare(validatePassword, row[0].password, function(err, results) {
+                            if (err) {
+                                //console.log(err.message)
+                                response.send(500)
+                            } else {
+                                if (results) {
+                                    request.session.authenticated = true
+                                    request.session.id = row.uid
+                                    response.redirect('/admin')
+                                } else {
+                                    validationErrors.push("Wrong username/password")
+
+                                    const model = {
+                                        validationErrors,
+                                        username: valdateUsername,
+                                        layout: 'clean.hbs'
+                                    }
+                                    
+                                    response.render('login.hbs', model)
+                                }
+                            }
+                        });
+        
+                    } else {
+                        validationErrors.push("Wrong username/password")
+
+                        const model = {
+                            validationErrors,
+                            username: valdateUsername,
+                            layout: 'clean.hbs'
+                        }
+                        
+                        response.render('login.hbs', model)
+                    }
+                }
+            });
+
+        } else {
+            validationErrors.push("Password must be 6 charcters or longer")
+
+            const model = {
+                validationErrors,
+                username: valdateUsername,
+                layout: 'clean.hbs'
+            }
+            
+            response.render('login.hbs', model)
+        }
     }
 })
 
