@@ -1,24 +1,3 @@
-<!--
-
-{{#if error}}
-    <p>{{ error }}</p>    
-{{/if}}
-<div class="form-group">
-    <form method="POST" action="/login">
-        <label class="form-label" for="input-slug">Post - slug</label>
-        <input class="form-input" type="text" id="input-slug" placeholder="Text" name="slug" maxlength="40" required>
-
-        <label class="form-label" for="input-username">Post - content</label>
-        <input class="form-input" type="text" id="input-username" placeholder="Text" name="content" required>
-
-        <label class="form-label" for="input-password">Post - category</label>
-        <input class="form-input" type="password" id="input-password" placeholder="Category" name="category" required>
-
-        <input class="form-submit" type="submit" placeholder="Post">
-    </form>
-</div>
-
--->
 
 {{#if validationErrors.length}}
 
@@ -59,11 +38,11 @@
   <fieldset>
     <div class="form-group">
       <label class="form-label" for="input-example-19">Slug</label>
-      <input class="form-input" type="text" id="input-example-19" placeholder="url name" name="slug">
+      <input class="form-input" type="text" id="input-example-19" placeholder="url name" name="slug" value="">
     </div>
     <div class="form-group">
         <label class="form-label" for="category-select">Category</label>
-        <select class="form-select" id="category-select" name="category">
+        <select class="form-select" id="category-select" name="category" value="">
             <option>All</option>
             <option>Tech</option>
             <option>Random</option>
@@ -71,7 +50,7 @@
     </div>
     <div class="form-group">
       <label class="form-label" for="input-example-20">Message</label>
-      <textarea class="form-input" id="input-example-20" placeholder="Textarea" rows="10" name="content"></textarea>
+      <textarea class="form-input" id="input-example-20" placeholder="Textarea" rows="10" name="content" value=""></textarea>
     </div>
   </fieldset>
   <div class="form-group">

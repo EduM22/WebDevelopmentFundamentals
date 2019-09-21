@@ -158,3 +158,11 @@ footer {
 footer .navbar-section {
     padding-left: 50%;
 }
+
+#blog-content {
+    margin-left: 4%;
+}
+
+#text {
+    font-size-adjust: auto;
+}
