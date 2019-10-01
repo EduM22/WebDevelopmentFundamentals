@@ -1,11 +1,14 @@
+{{#if message}}
+    <h3>{{message}}</h3>
+{{/if}}
 {{#if Posts.length}}
     <div class="column">
     {{#each Posts}}
         <div class="column col-11" id="blog-content">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title h5">{{this.post_slug}}</div>
-                    <div class="card-subtitle text-gray">{{this.post_category}}</div>
+                    <div class="card-title h5"><a href="/post/{{this.post_slug}}">{{this.post_slug}}</a></div>
+                    <div class="card-subtitle text-gray"><a href="/search?q={{this.post_category}}">{{this.post_category}}</a></div>
                 </div>
                 <div class="card-body" id="card-content">
                     <p id="text">{{this.post_content}}</p>
@@ -17,6 +20,16 @@
         </div>
         <br>
     {{/each}}
+    {{#if last_url}}
+        <div class="button-more-posts">
+            <a href="/posts?page={{last_url}}" class="btn btn-primary">last page</a>
+        </div>
+    {{/if}}
+    {{#if next_url}}
+        <div class="button-more-posts">
+            <a href="/posts?page={{next_url}}" class="btn btn-primary">next page</a>
+        </div>
+    {{/if}}
     </div>
 {{else}}
     <h1>No blog posts yet</h1>

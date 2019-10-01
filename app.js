@@ -34,6 +34,14 @@ app.use(bodyParser.urlencoded({
     extended: false
 }))
 
+app.use(function(request, response, next){
+	
+	response.locals.signedIn = request.session.authenticated
+	
+	next()
+	
+})
+
 app.use(routes)
 
 app.listen(port, () => console.log(`App is listening on port ${port}!`))

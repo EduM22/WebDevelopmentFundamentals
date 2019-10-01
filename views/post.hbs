@@ -4,8 +4,14 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title h5">{{Post.post_slug}}</div>
-                    <div class="card-subtitle text-gray">{{Post.post_category}}</div>
+                    <div class="card-subtitle text-gray"><a href="/search?q={{Post.post_category}}">{{Post.post_category}}</a></div>
                 </div>
+                {{#if signedIn}}
+                    <div class="card-header">
+                        <div class="card-title h5"><a href="/delete/post/{{Post.post_slug}}">Delete Post</a></div>
+                        <div class="card-title h5"><a href="/edit/post/{{Post.post_slug}}">Edit Post</a></div>
+                    </div>
+                {{/if}}
                 <div class="card-body" id="card-content">
                     <p id="text">{{Post.post_content}}</p>
                 </div>

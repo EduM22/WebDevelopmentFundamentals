@@ -2,7 +2,7 @@ var db = require('../db')
 
 exports.getLastPost = function(callback){
 	
-    const query = "SELECT * FROM Posts ORDER BY postid DESC LIMIT 1;"
+    const query = "SELECT * FROM Posts ORDER BY post_id DESC LIMIT 1;"
 	
 	db.get(query, function(error, lastPost){
         if (error) {
@@ -28,17 +28,21 @@ exports.newPost = function(userId, slug, content, category, callback) {
 }
 
 exports.getAllPosts = function(offset, callback){
-	
-    const query = "SELECT * FROM Posts ORDER BY postid DESC LIMIT 5 OFFSET ?"
-    const values = [offset]
-	
-	db.all(query, values, function(error, Posts){
+    
+    const query = "SELECT * FROM Posts ORDER BY post_id DESC LIMIT 5 OFFSET ?"
+    const values = [(offset * 5)]
+    
+    db.all(query, values, function(error, Posts){
         if (error) {
             callback(error, null)
         } else {
-            callback(null, Posts)
+            if (Posts.length > 0) {
+                callback(null, Posts)
+            } else {
+                callback(null, null)
+            }
         }
-	})
+    })
 }
 
 exports.getPost = function(slug, callback){
@@ -85,14 +89,60 @@ exports.deletePost = function(slug, callback) {
 
 exports.getAllGuestbookEntries = function(offset,callback) {
 
-    const query = "SELECT * FROM Guestbook ORDER BY id DESC LIMIT 5 OFFSET ?"
-    const values = [offset]
-	
-	db.all(query, values, function(error, entries){
+    const query = "SELECT * FROM Guestbook ORDER BY guestbook_id DESC LIMIT 5 OFFSET ?"
+    const values = [(offset * 5)]
+    
+    db.all(query, values, function(error, entries){
         if (error) {
             callback(error, null)
         } else {
-            callback(null, entries)
+            if (entries.length > 0) {
+                callback(null, entries)
+            } else {
+                callback(null, null)
+            }
+        }
+    })
+}
+
+exports.newGuestbookEntrie = function(name, content, callback) {
+
+    const query = "INSERT INTO Guestbook (name, content, created_date) VALUES (?, ?, ?)"
+    const values = [name, content, Date.now()]
+	
+	db.run(query, values, function(error){
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, this.lastID)
+        }
+	})
+}
+
+exports.deleteGuestbookEntrie = function(id, callback) {
+
+    const query = "DELETE FROM Guestbook WHERE guestbook_id = ?;"
+    const values = [id]
+	
+	db.run(query, values, function(error){
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, true)
+        }
+	})
+}
+
+exports.getWebpageContent = function(webpage, callback) {
+
+    const query = "SELECT * FROM Pages WHERE page = ? LIMIT 1"
+    const values = [webpage]
+	
+	db.get(query, values, function(error, content){
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, content)
         }
 	})
 }
