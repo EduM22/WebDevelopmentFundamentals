@@ -2,6 +2,9 @@ const express = require('express');
 const commentRouter = express.Router();
 
 const blog = require('../models/blog')
+const csurf = require('csurf')
+
+const csrfProtection = csurf()
 
 commentRouter.get('/comments/:postId', function(request, response) {
 
@@ -30,7 +33,7 @@ commentRouter.get('/comments/:postId', function(request, response) {
     
 })
 
-commentRouter.get('/new/comment/:postId', function(request, response) {
+commentRouter.get('/new/comment/:postId', csrfProtection, function(request, response) {
 
     const postId = request.params.postId
 
@@ -49,6 +52,7 @@ commentRouter.get('/new/comment/:postId', function(request, response) {
                 const model = {
                     title: 'New Comment',
                     Comments,
+                    csrfToken: request.csrfToken(),
                     layout: 'clean.hbs'
                 }
                 response.render("new_comment.hbs", model)
@@ -57,7 +61,7 @@ commentRouter.get('/new/comment/:postId', function(request, response) {
     }
 })
 
-commentRouter.post('/new/comment/:postId', function(request, response) {
+commentRouter.post('/new/comment/:postId', csrfProtection, function(request, response) {
     const validationErrors = []
 
     const postId = request.params.postId

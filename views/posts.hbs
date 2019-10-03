@@ -20,17 +20,17 @@
         </div>
         <br>
     {{/each}}
-    {{#if last_url}}
+    {{#if lastUrl}}
         <div class="button-more-posts">
-            <a href="/posts?page={{last_url}}" class="btn btn-primary">last page</a>
+            <a href="{{lastUrl}}" class="btn btn-primary">last page</a>
         </div>
     {{/if}}
-    {{#if next_url}}
+    {{#if nextUrl}}
         <div class="button-more-posts">
-            <a href="/posts?page={{next_url}}" class="btn btn-primary">next page</a>
+            <a href="{{nextUrl}}" class="btn btn-primary">next page</a>
         </div>
     {{/if}}
     </div>
 {{else}}
-    <h1>No blog posts yet</h1>
+    <h1>No blog posts</h1>
 {{/if}}

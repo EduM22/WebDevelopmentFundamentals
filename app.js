@@ -5,7 +5,7 @@ var helmet = require('helmet')
 const session = require('express-session')
 const SQLiteStore = require('connect-sqlite3')(session)
 
-var routes = require('./routes/routes')
+const routes = require('./routes/routes')
 
 const port = 8080
 const app = express()
@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({
 app.use(function(request, response, next){
 	
     response.locals.signedIn = request.session.authenticated
-	
+
 	next()
 	
 })

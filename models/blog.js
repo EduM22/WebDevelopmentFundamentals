@@ -28,18 +28,41 @@ exports.newPost = function(userId, slug, content, category, callback) {
 }
 
 exports.getAllPosts = function(offset, callback){
-    
+
     const query = "SELECT * FROM Posts ORDER BY post_id DESC LIMIT 5 OFFSET ?"
     const values = [(offset * 5)]
+
+    const query2 = "SELECT COUNT(*) FROM Posts"
+
     
     db.all(query, values, function(error, Posts){
         if (error) {
-            callback(error, null)
+            callback(error, null, null, null)
         } else {
             if (Posts.length > 0) {
-                callback(null, Posts)
+                //new pagination button logic
+                db.get(query2, function(error, amount) {
+                    if (error) {
+                        callback(null, Posts, null, null)
+                    } else {
+                        if (amount['COUNT(*)'] > (parseInt(offset)+1)*5) {
+                            if (parseInt(offset) > 0) {
+                                callback(null, Posts, "/posts?page="+(parseInt(offset)-1), "/posts?page="+(parseInt(offset)+1))
+                            } else {
+                                callback(null, Posts, null, "/posts?page="+(parseInt(offset)+1))
+                            }
+                        } else {
+                            if (parseInt(offset) > 0) {
+                                callback(null, Posts, "/posts?page="+(parseInt(offset)-1), null)
+                            } else {
+                                callback(null, Posts, null, null)
+                            }
+                        }
+                    }
+                })
+                // old = callback(null, Posts)
             } else {
-                callback(null, null)
+                callback(null, null, null, null)
             }
         }
     })

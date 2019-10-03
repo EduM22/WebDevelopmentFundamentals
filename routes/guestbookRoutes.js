@@ -1,9 +1,12 @@
-var express = require('express');
-var guestbookRouter = express.Router();
+const express = require('express');
+const guestbookRouter = express.Router();
 
-var blog = require('../models/blog')
+const blog = require('../models/blog')
+const csurf = require('csurf')
 
-guestbookRouter.get('/guestbook', function(request, response) {
+const csrfProtection = csurf()
+
+guestbookRouter.get('/guestbook', csrfProtection, function(request, response) {
     var page = 0
     if (request.params.page == null) {
         page = 0
@@ -20,6 +23,7 @@ guestbookRouter.get('/guestbook', function(request, response) {
                 //response.send("no entries")
             } else {
                 const model = {
+                    csrfToken: request.csrfToken(),
                     row: entries
                 }
                 response.render('guestbook.hbs', model)
@@ -31,7 +35,7 @@ guestbookRouter.get('/guestbook', function(request, response) {
 });
 
 
-guestbookRouter.post('/guestbook', function(request, response) {
+guestbookRouter.post('/guestbook', csrfProtection, function(request, response) {
     const validationErrors = []
 
     const validateContent = request.body.content

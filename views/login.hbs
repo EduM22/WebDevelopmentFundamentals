@@ -3,6 +3,7 @@
 <p>{{validationErrors}}</p>
 
 <form action="/login" method="POST">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
     {{#if username.length}}
     <div class="form-group">
         <label class="form-label" for="usernameInput">Username</label>
@@ -26,6 +27,7 @@
 {{else}}
 
 <form action="/login" method="POST">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <div class="form-group">
         <label class="form-label" for="usernameInput">Username</label>
         <input class="form-input" id="usernameInput" type="text" name="username" placeholder="Username" required>

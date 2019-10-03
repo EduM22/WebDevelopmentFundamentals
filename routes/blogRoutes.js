@@ -1,11 +1,13 @@
-var express = require('express');
-var blogRouter = express.Router();
+const express = require('express');
+const blogRouter = express.Router();
 
 const blog = require('../models/blog')
 const auth = require('../models/auth')
-var csurf = require('csurf')
 
-var csrfProtection = csurf()
+const csurf = require('csurf')
+
+const csrfProtection = csurf()
+
 
 /*
 function isAuthenticated(request, response, next) {
@@ -68,8 +70,8 @@ blogRouter.get('/edit/post/:slug', auth.isAuthenticated, csrfProtection, functio
         } else {
             const model = {
                 title: 'Home',
-                Post,
-                csrfToken: request.csrfToken()
+                csrfToken: request.csrfToken(),
+                Post
             }
             response.render('edit_post.hbs', model)
         }
@@ -117,7 +119,7 @@ blogRouter.post('/edit/post/:slug', auth.isAuthenticated, csrfProtection, functi
     }
 })
 
-blogRouter.post('/delete/post/:slug', auth.isAuthenticated, function(request, response) {
+blogRouter.post('/delete/post/:slug', auth.isAuthenticated, csrfProtection, function(request, response) {
     blog.deletePost(request.params.slug, function(error) {
         if (error) {
             response.send(error)
@@ -127,7 +129,7 @@ blogRouter.post('/delete/post/:slug', auth.isAuthenticated, function(request, re
     })
 })
 
-blogRouter.get('/post/:slug', function(request, response) {
+blogRouter.get('/post/:slug', csrfProtection, function(request, response) {
 
     blog.getPost(request.params.slug, function(error, Post) {
         if (error) {
@@ -135,6 +137,7 @@ blogRouter.get('/post/:slug', function(request, response) {
         } else {
             const model = {
                 title: 'Home',
+                csrfToken: request.csrfToken(),
                 Post,
             }
             response.render('post.hbs', model)
@@ -149,38 +152,32 @@ blogRouter.get('/post', function(request, response) {
 blogRouter.get('/posts', function(request, response) {
 
     var page = request.query.page
-    if (page == null) {
+    if (page == "" || page == null) {
         page = 0
     }
 
-    blog.getAllPosts(page, function(error, Posts) {
+    blog.getAllPosts(page, function(error, Posts, lastUrl, nextUrl) {
         if (error) {
             //response.status(404).send(error, "error")
             response.render("posts.hbs")
         } else {
             if (Posts == null) {
-                const last_url = parseInt(page) - 1
-                /*if (last_url <= 0 || last_url == null) {
-                    last_url = ""
-                }*/
+
                 const model = {
                     title: 'Posts',
-                    last_url
+                    lastUrl
                 }
+
                 response.render("posts.hbs", model)
+
             } else {
-                const next_url = parseInt(page) + 1
-                const last_url = parseInt(page) - 1
-                /*if (last_url <= 0 || last_url == null) {
-                    last_url = ""
-                }*/
-               
-                const model = {
+                var model = {
                     title: 'Posts',
                     Posts,
-                    next_url,
-                    last_url
+                    lastUrl,
+                    nextUrl
                 }
+
                 response.render("posts.hbs", model)
             }
         }

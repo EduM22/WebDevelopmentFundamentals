@@ -3,22 +3,9 @@ var adminRouter = express.Router();
 
 var auth = require('../models/auth')
 
-/*
-function isAuthenticated(request, response, next) {
-    if (request.session.authenticated && request.session.user != null) {
-        return next();
-    }
+const csurf = require('csurf')
 
-    response.redirect('/')
-}
-
-function alreadyAuthenticated(request, response, next) {
-    if (request.session.authenticated && request.session.user != null) {
-        return response.redirect('/admin')
-    } else {
-        return next();
-    }
-}*/
+const csrfProtection = csurf()
 
 adminRouter.get('/admin', auth.isAuthenticated, function(request, response) {
     const model = {
@@ -28,11 +15,11 @@ adminRouter.get('/admin', auth.isAuthenticated, function(request, response) {
     response.render('admin.hbs', model)
 });
 
-adminRouter.get('/login', auth.alreadyAuthenticated, function(request, response) {
-    response.render('login.hbs', { layout: 'clean.hbs' })
+adminRouter.get('/login', auth.alreadyAuthenticated, csrfProtection, function(request, response) {
+    response.render('login.hbs', { layout: 'clean.hbs', csrfToken: request.csrfToken()})
 })
 
-adminRouter.post('/login', auth.alreadyAuthenticated, function(request, response) {
+adminRouter.post('/login', auth.alreadyAuthenticated, csrfProtection, function(request, response) {
     const validationErrors = []
 
     const valdateUsername = request.body.username
