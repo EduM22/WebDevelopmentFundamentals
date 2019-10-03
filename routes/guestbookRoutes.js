@@ -32,24 +32,39 @@ guestbookRouter.get('/guestbook', function(request, response) {
 
 
 guestbookRouter.post('/guestbook', function(request, response) {
-    response.status(200).send("post to guestbook")
-    /*
-    var page = request.query.page
-    if (page == null) {
-        page = 0
+    const validationErrors = []
+
+    const validateContent = request.body.content
+    const validateName = request.body.name
+
+    if (validateContent == "") {
+        validationErrors.push("content is empty")
     }
 
-    blog.getAllGuestbookEntries(page, function(error, entries) {
-        if (error) {
-            response.send(error, "error")
-        } else {
-            if (entries == null) {
-                response.send("no entries")
-            } else {
-                response.send(entries)
-            }
+    if (validateName == "") {
+        validationErrors.push("name is empty")
+    }
+
+    if (validationErrors.length > 0) {
+        const model = {
+            validationErrors,
+            layout: 'clean.hbs'
         }
-    })*/
+
+        response.render('guestbook.hbs', model)
+        
+    } else {
+
+        blog.newGuestbookEntry(validateName, validateContent, function(error, post) {
+            if (error) {
+                response.send(error)
+            } else {
+                response.redirect("/guestbook")
+            }
+        })
+
+    }
+
 });
 
 module.exports = guestbookRouter;

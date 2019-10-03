@@ -1,26 +1,32 @@
+<div class="column">
+    <div class="column col-11" id="blog-content">
+        <button class="btn btn-primary"><a href="/posts">Go back</a></button>
 {{#if Post}}
-    <div class="column">
-        <div class="column col-11" id="blog-content">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title h5">{{Post.post_slug}}</div>
-                    <div class="card-subtitle text-gray"><a href="/search?q={{Post.post_category}}">{{Post.post_category}}</a></div>
-                </div>
-                {{#if signedIn}}
-                    <div class="card-header">
-                        <div class="card-title h5"><a href="/delete/post/{{Post.post_slug}}">Delete Post</a></div>
-                        <div class="card-title h5"><a href="/edit/post/{{Post.post_slug}}">Edit Post</a></div>
-                    </div>
-                {{/if}}
-                <div class="card-body" id="card-content">
-                    <p id="text">{{Post.post_content}}</p>
-                </div>
-                <div class="card-footer">
-                    <button class="btn btn-primary">Comment</button>
-                </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title h5">{{Post.post_slug}}</div>
+                <div class="card-subtitle text-gray"><a href="/search?q={{Post.post_category}}">{{Post.post_category}}</a></div>
             </div>
+            {{#if signedIn}}
+            <div class="card-header">
+                <div class="card-title h6">
+                    <form action="/delete/post/{{Post.post_slug}}" method="POST">
+                        <input class="btn" type="submit" value="Delete Post">
+                    </form>
+                </div>
+                <div class="card-title h6"><a href="/edit/post/{{Post.post_slug}}" class="btn">Edit Post</a></div>
+            </div>
+            {{/if}}
+            <div class="card-body" id="card-content">
+                <p id="text">{{{Post.post_content}}}</p>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary"><a href="/new/comment/{{Post.post_id}}">Comment</a></button>
+            </div>
+            <iframe src="/comments/{{Post.post_id}}" height="300px" style="margin-top:50px;"></iframe> 
         </div>
-    </div>
 {{else}}
     <h1>No blog posts yet</h1>
 {{/if}}
+    </div>
+</div>

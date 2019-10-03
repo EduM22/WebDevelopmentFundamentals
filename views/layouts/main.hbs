@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
-    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="/style/main.css">
     {{#if title}}
     <title>| Johan.Blog - {{ title }} |</title>
     {{else}}
@@ -17,6 +17,7 @@
     <div class="container">
       <header class="header">
         <a href="/" class="logo navbar-brand mr-2">Johan.Blog</a>
+        <a href="/guestbook" class="navbar">guestbook</a>
         <input class="menu-btn" type="checkbox" id="menu-btn" />
         <label class="menu-icon" for="menu-btn"><span class="nav-icon"></span></label>
         <ul class="menu">
@@ -33,7 +34,6 @@
             </form>
           </li>
         </ul>
-        <a href="/guestbook">guestbook</a>
       </header>
 
       <div class="main-content">

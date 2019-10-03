@@ -11,11 +11,11 @@
                     <div class="card-subtitle text-gray"><a href="/search?q={{this.post_category}}">{{this.post_category}}</a></div>
                 </div>
                 <div class="card-body" id="card-content">
-                    <p id="text">{{this.post_content}}</p>
+                    <p id="text">{{{this.post_content}}}</p>
                 </div>
-                <div class="card-footer">
-                    <button class="btn btn-primary">Comment</button>
-                </div>
+                <!--<div class="card-footer">
+                    <button class="btn btn-primary"><a href="/new/comment/{{this.post_id}}">Comment</a></button>
+                </div>-->
             </div>
         </div>
         <br>

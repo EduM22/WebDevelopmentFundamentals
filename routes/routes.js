@@ -1,16 +1,18 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var adminRoutes = require('./adminRoutes')
-var errorRoutes = require('./errorRoutes')
-var normalRoutes = require('./normalRoutes')
-var blogRoutes = require('./blogRoutes')
-var guestbookRoutes = require('./guestbookRoutes')
+const adminRoutes = require('./adminRoutes')
+const errorRoutes = require('./errorRoutes')
+const normalRoutes = require('./normalRoutes')
+const blogRoutes = require('./blogRoutes')
+const guestbookRoutes = require('./guestbookRoutes')
+const commentRoutes = require('./commentsRoutes')
 
 router.use(adminRoutes)
 router.use(normalRoutes)
 router.use(blogRoutes)
 router.use(guestbookRoutes)
+router.use(commentRoutes)
 
 /*
 error routes must be last or they will overide the other routes

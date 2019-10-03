@@ -1,0 +1,18 @@
+<h1>Comments on blog post</h1>
+{{#if Comments.length}}
+    <div class="column">
+    {{#each Comments}}
+        <div class="column col-11" id="blog-content">
+            <div class="card">
+                <div class="card-body" id="card-content">
+                    <h1>{{this.comment_username}}</h1>
+                    <p>{{this.comment_content}}</p>
+                </div>
+            </div>
+        </div>
+        <br>
+    {{/each}}
+    </div>
+{{else}}
+    <h1>No Comments yet</h1>
+{{/if}}

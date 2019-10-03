@@ -8,6 +8,7 @@
 </ul>
 
 <form action="/edit/post/{{Post.post_slug}}" method="POST">
+<input type="hidden" name="_csrf" value="{{csrfToken}}">
   <fieldset>
     <div class="form-group">
       <label class="form-label" for="input-example-19">Slug</label>
@@ -23,8 +24,8 @@
         </select>
     </div>
     <div class="form-group">
-      <label class="form-label" for="input-example-20">Message</label>
-      <textarea class="form-input is-error" id="input-example-20" placeholder="Textarea" rows="10" name="content">{{Post.post_content}}</textarea>
+      <label class="form-label" for="input-post-content">Message</label>
+      <textarea class="form-input is-error" id="input-post-content" placeholder="Textarea" rows="10" name="content">{{Post.post_content}}</textarea>
     </div>
   </fieldset>
   <div class="form-group">
@@ -35,6 +36,7 @@
 {{else}}
 
 <form action="/edit/post/{{Post.post_slug}}" method="POST">
+<input type="hidden" name="_csrf" value="{{csrfToken}}">
   <fieldset>
     <div class="form-group">
       <label class="form-label" for="input-example-19">Slug</label>

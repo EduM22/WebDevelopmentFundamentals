@@ -1,25 +1,3 @@
-<!--
-
-{{#if error}}
-    <p>{{ error }}</p>    
-{{/if}}
-<div class="form-group">
-    <form method="POST" action="/login">
-        <label class="form-label" for="input-slug">Post - slug</label>
-        <input class="form-input" type="text" id="input-slug" placeholder="Text" name="slug" maxlength="40" required>
-
-        <label class="form-label" for="input-username">Post - content</label>
-        <input class="form-input" type="text" id="input-username" placeholder="Text" name="content" required>
-
-        <label class="form-label" for="input-password">Post - category</label>
-        <input class="form-input" type="password" id="input-password" placeholder="Category" name="category" required>
-
-        <input class="form-submit" type="submit" placeholder="Post">
-    </form>
-</div>
-
--->
-
 {{#if validationErrors.length}}
 
 <ul>
@@ -29,6 +7,7 @@
 </ul>
 
 <form action="/new/post" method="POST">
+<input type="hidden" name="_csrf" value="{{csrfToken}}">
   <fieldset>
     <div class="form-group">
       <label class="form-label" for="input-example-19">Slug</label>
@@ -49,14 +28,15 @@
     </div>
   </fieldset>
   <div class="form-group">
-        <input class="form-submit" type="submit" placeholder="Login">
+        <input class="btn" type="submit" value="Upload">
     </div>
 </form>
 
 {{else}}
 
 <form action="/new/post" method="POST">
-  <fieldset>
+<input type="hidden" name="_csrf" value="{{csrfToken}}">
+<fieldset>
     <div class="form-group">
       <label class="form-label" for="input-example-19">Slug</label>
       <input class="form-input" type="text" id="input-example-19" placeholder="url name" name="slug">
@@ -73,9 +53,9 @@
       <label class="form-label" for="input-example-20">Message</label>
       <textarea class="form-input" id="input-example-20" placeholder="Textarea" rows="10" name="content"></textarea>
     </div>
-  </fieldset>
+</fieldset>
   <div class="form-group">
-        <input class="form-submit" type="submit" placeholder="Login">
+        <input class="btn" type="submit" value="Upload">
     </div>
 </form>
 

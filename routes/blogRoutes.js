@@ -1,8 +1,13 @@
 var express = require('express');
 var blogRouter = express.Router();
 
-var blog = require('../models/blog')
+const blog = require('../models/blog')
+const auth = require('../models/auth')
+var csurf = require('csurf')
 
+var csrfProtection = csurf()
+
+/*
 function isAuthenticated(request, response, next) {
     if (request.session.authenticated && request.session.user != null) {
         return next();
@@ -10,13 +15,13 @@ function isAuthenticated(request, response, next) {
 
     response.redirect('/')
 }
+*/
 
-
-blogRouter.get('/new/post', isAuthenticated, function(request, response) {
-    response.render('new_post.hbs', { layout: 'clean.hbs' })
+blogRouter.get('/new/post', auth.isAuthenticated, csrfProtection, function(request, response) {
+    response.render('new_post.hbs', { layout: 'clean.hbs', csrfToken: request.csrfToken() })
 })
 
-blogRouter.post('/new/post', isAuthenticated, function(request, response) {
+blogRouter.post('/new/post', auth.isAuthenticated, csrfProtection, function(request, response) {
     const validationErrors = []
 
     const validateContent = request.body.content
@@ -56,21 +61,22 @@ blogRouter.post('/new/post', isAuthenticated, function(request, response) {
     }
 })
 
-blogRouter.get('/edit/post/:slug', isAuthenticated, function(request, response) {
+blogRouter.get('/edit/post/:slug', auth.isAuthenticated, csrfProtection, function(request, response) {
     blog.getPost(request.params.slug, function(error, Post) {
         if (error) {
             response.send(error)
         } else {
             const model = {
                 title: 'Home',
-                Post
+                Post,
+                csrfToken: request.csrfToken()
             }
             response.render('edit_post.hbs', model)
         }
     })
 })
 
-blogRouter.post('/edit/post/:slug', isAuthenticated, function(request, response) {
+blogRouter.post('/edit/post/:slug', auth.isAuthenticated, csrfProtection, function(request, response) {
     const oldSlug = request.params.slug
     const validationErrors = []
 
@@ -104,7 +110,6 @@ blogRouter.post('/edit/post/:slug', isAuthenticated, function(request, response)
             if (error) {
                 response.send(error)
             } else {
-                console.log("test")
                 response.redirect("/post/"+validateSlug)
             }
         })
@@ -112,7 +117,7 @@ blogRouter.post('/edit/post/:slug', isAuthenticated, function(request, response)
     }
 })
 
-blogRouter.get('/delete/post/:slug', isAuthenticated, function(request, response) {
+blogRouter.post('/delete/post/:slug', auth.isAuthenticated, function(request, response) {
     blog.deletePost(request.params.slug, function(error) {
         if (error) {
             response.send(error)

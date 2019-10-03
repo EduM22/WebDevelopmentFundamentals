@@ -3,6 +3,7 @@ var adminRouter = express.Router();
 
 var auth = require('../models/auth')
 
+/*
 function isAuthenticated(request, response, next) {
     if (request.session.authenticated && request.session.user != null) {
         return next();
@@ -17,9 +18,9 @@ function alreadyAuthenticated(request, response, next) {
     } else {
         return next();
     }
-}
+}*/
 
-adminRouter.get('/admin', isAuthenticated, function(request, response) {
+adminRouter.get('/admin', auth.isAuthenticated, function(request, response) {
     const model = {
         user: request.session.user
     }
@@ -27,11 +28,11 @@ adminRouter.get('/admin', isAuthenticated, function(request, response) {
     response.render('admin.hbs', model)
 });
 
-adminRouter.get('/login', alreadyAuthenticated, function(request, response) {
+adminRouter.get('/login', auth.alreadyAuthenticated, function(request, response) {
     response.render('login.hbs', { layout: 'clean.hbs' })
 })
 
-adminRouter.post('/login', alreadyAuthenticated, function(request, response) {
+adminRouter.post('/login', auth.alreadyAuthenticated, function(request, response) {
     const validationErrors = []
 
     const valdateUsername = request.body.username
@@ -50,7 +51,19 @@ adminRouter.post('/login', alreadyAuthenticated, function(request, response) {
     } else {
         if(validatePassword.length >= 6) {
 
-            auth.login(valdateUsername, validatePassword, request, function(sqlError, authError){
+            auth.login(valdateUsername, validatePassword, request, function(sqlError, authError, user){
+
+                /*
+                if (sqlError) {
+                    response.status(200).send("sql error" + sqlError)
+                } else if (authError) {
+                    response.status(200).send("auth error" + authError)
+                } else if (user) {
+                    response.status(200).send("user" + user)
+                } else {
+                    response.status(200).send("error")
+                }*/
+                
                 if(sqlError){
                     response.render("500.hbs")
                 } else if(authError) {
@@ -63,8 +76,17 @@ adminRouter.post('/login', alreadyAuthenticated, function(request, response) {
                     }
                     response.render('login.hbs', model)
 
-                } else{
+                } else if(user){
                     response.redirect('/admin')
+                } else {
+                    validationErrors.push("Wrong username/password")
+                    
+                    const model = {
+                        validationErrors,
+                        username: valdateUsername,
+                        layout: 'clean.hbs'
+                    }
+                    response.render('login.hbs', model)
                 }
                 
             })
@@ -83,7 +105,7 @@ adminRouter.post('/login', alreadyAuthenticated, function(request, response) {
     }
 })
 
-adminRouter.get('/logout', isAuthenticated, function(request, response) {
+adminRouter.get('/logout', auth.isAuthenticated, function(request, response) {
 
     auth.logout(request, function(error) {
         if (error) {

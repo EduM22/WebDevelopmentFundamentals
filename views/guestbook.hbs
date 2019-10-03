@@ -8,7 +8,8 @@
         <div class="modal-body">
             <div class="content">
                 <form action="" method="POST">
-                    <input type="text" name="name" required minlength="3" maxlength="250">
+                    <input type="text" name="name" placeholder="name" required>
+                    <input type="text" name="content" placeholder="content" minlength="3" maxlength="250" required>
                     <input type="submit" placeholder="upload">
                 </form>
             </div>
@@ -16,11 +17,11 @@
     </div>
 </div>
 
-{{#if rows.length}}
-    {{#each rows}}
-        <p hidden>{{id}}</p>
-        <h2>{{name}}</h2>
-        <p>{{content}}</p>
+{{#if row.length}}
+    {{#each row}}
+        <p hidden>{{guestbook_id}}</p>
+        <h2>{{guestbook_name}}</h2>
+        <p>{{guestbook_content}}</p>
     {{/each}}
 {{else}}
     <h1>No guestbook enteries</h1>

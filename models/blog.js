@@ -105,9 +105,9 @@ exports.getAllGuestbookEntries = function(offset,callback) {
     })
 }
 
-exports.newGuestbookEntrie = function(name, content, callback) {
+exports.newGuestbookEntry = function(name, content, callback) {
 
-    const query = "INSERT INTO Guestbook (name, content, created_date) VALUES (?, ?, ?)"
+    const query = "INSERT INTO Guestbook (guestbook_name, guestbook_content, created_date) VALUES (?, ?, ?)"
     const values = [name, content, Date.now()]
 	
 	db.run(query, values, function(error){
@@ -119,7 +119,7 @@ exports.newGuestbookEntrie = function(name, content, callback) {
 	})
 }
 
-exports.deleteGuestbookEntrie = function(id, callback) {
+exports.deleteGuestbookEntry = function(id, callback) {
 
     const query = "DELETE FROM Guestbook WHERE guestbook_id = ?;"
     const values = [id]
@@ -143,6 +143,33 @@ exports.getWebpageContent = function(webpage, callback) {
             callback(error, null)
         } else {
             callback(null, content)
+        }
+	})
+}
+
+exports.getAllComments = function(postId, callback) {
+
+    const query = "SELECT * FROM Comments WHERE post_id = ?"
+    const values = [postId]
+	
+	db.all(query, values, function(error, Comments){
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, Comments)
+        }
+	})
+}
+
+exports.newComment = function(postId, email, username, content, callback) {
+    const query = "INSERT INTO Comments (post_id, comment_email, comment_username, comment_content, comment_date) VALUES (?, ?, ?, ?, ?)"
+    const values = [postId, email, username, content, Date.now()]
+	
+	db.run(query, values, function(error){
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, this.lastID)
         }
 	})
 }

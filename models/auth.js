@@ -10,15 +10,21 @@ exports.login = function(username, password, request, callback){
         if (error) {
             callback(true, false)
         } else {
-            bcrypt.compare(password, user.password, function(error) {
-                if (error) {
-                    callback(false, true)
-                } else {
-                    request.session.authenticated = true
-                    request.session.user = user
-                    callback(false, false)
-                }
-            });
+            if (user) {
+                bcrypt.compare(password, user.password).then(function(result) {
+                    if (result) {
+                        //true
+                        request.session.authenticated = true
+                        request.session.user = user
+                        callback(false, false, user)
+                    } else {
+                        //false
+                        callback(false, true, null)
+                    }
+                });
+            } else {
+                callback(false, true, null)
+            }
         }
 	})
 }
@@ -63,4 +69,20 @@ exports.changePassword = function(username, oldPassword, newPassword, callback){
         }
 	})
 	
+}
+
+exports.isAuthenticated = function (request, response, next) {
+    if (request.session.authenticated && request.session.user != null) {
+        return next();
+    }
+
+    response.redirect('/')
+}
+
+exports.alreadyAuthenticated = function(request, response, next) {
+    if (request.session.authenticated && request.session.user != null) {
+        return response.redirect('/admin')
+    } else {
+        return next();
+    }
 }
