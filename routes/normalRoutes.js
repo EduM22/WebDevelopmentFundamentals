@@ -1,7 +1,10 @@
-var express = require('express');
-var normalRouter = express.Router();
+const express = require('express');
+const normalRouter = express.Router();
 
-var blog = require('../models/blog')
+const blog = require('../models/blog')
+const csurf = require('csurf')
+
+const csrfProtection = csurf()
 
 normalRouter.get('/', function(request, response) {
 
@@ -43,9 +46,14 @@ normalRouter.get('/about', function(request, response) {
     })
 })
 
-normalRouter.get('/contact', function(request, response) {
+normalRouter.get('/contact', csrfProtection, function(request, response) {
+    response.render('contact.hbs', {csrfToken: request.csrfToken()})
+})
+
+normalRouter.post('/contact', csrfProtection, function(request, response) {
     response.render('contact.hbs')
 })
+
 
 normalRouter.get('/search', function(request, res) {
     const searchQuestion = request.query.q
@@ -55,7 +63,7 @@ normalRouter.get('/search', function(request, res) {
 })
 
 normalRouter.get('/portfolio', function(request, response) {
-    response.send('portfolio')
+    response.render('portfolio.hbs')
 })
 
 module.exports = normalRouter;

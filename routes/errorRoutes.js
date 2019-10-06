@@ -1,5 +1,5 @@
-var express = require('express');
-var errorRouter = express.Router();
+const express = require('express');
+const errorRouter = express.Router();
 
 errorRouter.use(function (error, request, response, next) {
     if (error.code !== 'EBADCSRFTOKEN') return next(error)

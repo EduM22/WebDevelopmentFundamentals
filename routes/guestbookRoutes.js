@@ -19,7 +19,7 @@ guestbookRouter.get('/guestbook', csrfProtection, function(request, response) {
             response.render("500.hbs")
         } else {
             if (entries == null) {
-                response.render('guestbook.hbs')
+                response.render('guestbook.hbs', {csrfToken: request.csrfToken()})
                 //response.send("no entries")
             } else {
                 const model = {

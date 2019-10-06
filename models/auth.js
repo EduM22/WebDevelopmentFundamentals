@@ -1,4 +1,4 @@
-var db = require('../db') 
+const db = require('../db') 
 const bcrypt = require('bcrypt')
 
 exports.login = function(username, password, request, callback){

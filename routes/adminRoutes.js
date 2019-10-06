@@ -1,7 +1,7 @@
-var express = require('express');
-var adminRouter = express.Router();
+const express = require('express');
+const adminRouter = express.Router();
 
-var auth = require('../models/auth')
+const auth = require('../models/auth')
 
 const csurf = require('csurf')
 

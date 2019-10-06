@@ -1,7 +1,7 @@
 const express = require('express')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
-var helmet = require('helmet')
+const helmet = require('helmet')
 const session = require('express-session')
 const SQLiteStore = require('connect-sqlite3')(session)
 
@@ -44,6 +44,4 @@ app.use(routes)
 
 app.listen(port, () => console.log(`App is listening on port ${port}!`))
 
-//db.close();
-
-//user => test,test
+//user => root, toor123
