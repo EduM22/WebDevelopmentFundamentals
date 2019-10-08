@@ -45,9 +45,9 @@ const db = new sqlite3.Database('db-blog.db', (error) => {
             
 
         db.run("CREATE TABLE IF NOT EXISTS Pages (\
-            page_id INTEGER PRIMARY KEY AUTOINCREMENT,\
-            page_name TEXT NOT NULL,\
-            page_content TEXT NOT NULL)", function(error) {
+            id INTEGER PRIMARY KEY AUTOINCREMENT,\
+            name TEXT NOT NULL,\
+            content TEXT NOT NULL)", function(error) {
             if (error) {
                 console.log(error.message)
             }
@@ -74,6 +74,7 @@ const db = new sqlite3.Database('db-blog.db', (error) => {
                 console.log(error.message)
             }
         });
+
 
         const query = "SELECT * FROM Users WHERE username = ? LIMIT 1"
         const values = ["root"]

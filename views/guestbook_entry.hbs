@@ -1,0 +1,25 @@
+<div class="column">
+    <div class="column col-11" id="blog-content">
+        <button class="btn btn-primary"><a href="/guestbook">Go back</a></button>
+        {{#if entry}}
+            <div class="card">
+                {{#if signedIn}}
+                <div class="card-header">
+                    <div class="card-title h6">
+                        <form action="/delete/guestbook-entry/{{entry.guestbook_id}}" method="POST">
+                            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                            <input class="btn" type="submit" value="Delete Post">
+                        </form>
+                    </div>
+                </div>
+                {{/if}}
+                <div class="card-body" id="card-content">
+                    <h3>{{entry.guestbook_name}}</h3>
+                    <p id="text">{{entry.guestbook_content}}</p>
+                </div>
+            </div>
+    {{else}}
+        <h1>No contact requests</h1>
+    {{/if}}
+    </div>
+</div>

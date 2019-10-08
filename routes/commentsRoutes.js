@@ -2,35 +2,79 @@ const express = require('express');
 const commentRouter = express.Router();
 
 const blog = require('../models/blog')
+const auth = require('../models/auth')
+
 const csurf = require('csurf')
 
 const csrfProtection = csurf()
 
-commentRouter.get('/comments/:postId', function(request, response) {
+commentRouter.get('/comments/:postId', csrfProtection, function(request, response) {
 
     const postId = request.params.postId
 
     blog.getAllComments(postId, function(error, Comments) {
         if (error) {
-            response.send(error.message)
+            response.render('500.hbs')
         } else {
             if (Comments == null) {
                 const model = {
                     title: 'Comments',
-                    layout: 'clean.hbs'
+                    layout: 'clean.hbs',
+                    csrfToken: request.csrfToken()
                 }
                 response.render("comments.hbs", model)
             } else {
                 const model = {
                     title: 'Comments',
                     Comments: Comments,
-                    layout: 'clean.hbs'
+                    signedIn: true,
+                    layout: 'clean.hbs',
+                    csrfToken: request.csrfToken()
                 }
                 response.render("comments.hbs", model)
             }
         }
     })
     
+})
+
+commentRouter.get('/comment/:commentId', csrfProtection, function(request, response) {
+
+    const commentId = request.params.commentId
+
+    if (commentId == "") {
+
+    } else {
+        blog.getComment(commentId, function(error, comment) {
+            if (error) {
+                response.render('500.hbs')
+            } else {
+                const model = {
+                    csrfToken: request.csrfToken(),
+                    comment
+                }
+                response.render('comment.hbs', model)
+            }
+        })
+    }
+    
+})
+
+commentRouter.post('/delete/comment/:id', auth.isAuthenticated, csrfProtection, function(request, response) {
+
+    const id = request.params.id
+
+    if (id == "") {
+        response.redirect('/')
+    } else {
+        blog.deleteComment(id, function(error) {
+            if (error) {
+                response.render('500.hbs')
+            } else {
+                response.redirect('/posts')
+            }
+        })
+    }
 })
 
 commentRouter.get('/new/comment/:postId', csrfProtection, function(request, response) {
@@ -47,7 +91,7 @@ commentRouter.get('/new/comment/:postId', csrfProtection, function(request, resp
     } else {
         blog.getAllComments(postId, function(error, Comments) {
             if (error) {
-    
+                response.render('500.hbs')
             } else {
                 const model = {
                     title: 'New Comment',
@@ -101,28 +145,13 @@ commentRouter.post('/new/comment/:postId', csrfProtection, function(request, res
     
             blog.newComment(postId, validateEmail, validateUsername, validateContent, function(error, post) {
                 if (error) {
-                    response.send(error)
+                    response.render('500.hbs')
                 } else {
-                    console.log(post)
                     response.redirect("/posts/")
                 }
             })
         }
     }
-
-    /*
-    blog.newComment(postId, function(error, Comments) {
-        if (error) {
-
-        } else {
-            const model = {
-                title: 'Comments',
-                Comments,
-                layout: 'clean.hbs'
-            }
-            response.render("comments.hbs", model)
-        }
-    })*/
     
 })
 

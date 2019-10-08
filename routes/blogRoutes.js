@@ -8,17 +8,6 @@ const csurf = require('csurf')
 
 const csrfProtection = csurf()
 
-
-/*
-function isAuthenticated(request, response, next) {
-    if (request.session.authenticated && request.session.user != null) {
-        return next();
-    }
-
-    response.redirect('/')
-}
-*/
-
 blogRouter.get('/new/post', auth.isAuthenticated, csrfProtection, function(request, response) {
     response.render('new_post.hbs', { layout: 'clean.hbs', csrfToken: request.csrfToken() })
 })
@@ -54,7 +43,7 @@ blogRouter.post('/new/post', auth.isAuthenticated, csrfProtection, function(requ
 
         blog.newPost(request.session.user.uid, validateSlug, validateContent, validateCategory, function(error, post) {
             if (error) {
-                response.send(error)
+                response.render('500.hbs')
             } else {
                 response.redirect("/post/"+validateSlug)
             }
@@ -66,7 +55,7 @@ blogRouter.post('/new/post', auth.isAuthenticated, csrfProtection, function(requ
 blogRouter.get('/edit/post/:slug', auth.isAuthenticated, csrfProtection, function(request, response) {
     blog.getPost(request.params.slug, function(error, Post) {
         if (error) {
-            response.send(error)
+            response.render('500.hbs')
         } else {
             const model = {
                 title: 'Home',
@@ -110,7 +99,7 @@ blogRouter.post('/edit/post/:slug', auth.isAuthenticated, csrfProtection, functi
 
         blog.updatePost(request.session.user.uid, validateSlug, oldSlug, validateContent, validateCategory, function(error, post) {
             if (error) {
-                response.send(error)
+                response.render('500.hbs')
             } else {
                 response.redirect("/post/"+validateSlug)
             }
@@ -122,7 +111,7 @@ blogRouter.post('/edit/post/:slug', auth.isAuthenticated, csrfProtection, functi
 blogRouter.post('/delete/post/:slug', auth.isAuthenticated, csrfProtection, function(request, response) {
     blog.deletePost(request.params.slug, function(error) {
         if (error) {
-            response.send(error)
+            response.render('500.hbs')
         } else {
             response.redirect('/posts')
         }
@@ -133,7 +122,7 @@ blogRouter.get('/post/:slug', csrfProtection, function(request, response) {
 
     blog.getPost(request.params.slug, function(error, Post) {
         if (error) {
-            response.send(error)
+            response.render('500.hbs')
         } else {
             const model = {
                 title: 'Home',
@@ -158,8 +147,7 @@ blogRouter.get('/posts', function(request, response) {
 
     blog.getAllPosts(page, function(error, Posts, lastUrl, nextUrl) {
         if (error) {
-            //response.status(404).send(error, "error")
-            response.render("posts.hbs")
+            response.render('500.hbs')
         } else {
             if (Posts == null) {
 

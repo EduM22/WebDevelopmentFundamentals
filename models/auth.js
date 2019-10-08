@@ -8,7 +8,7 @@ exports.login = function(username, password, request, callback){
 	
 	db.get(query, values, function(error, user){
         if (error) {
-            callback(true, false)
+            callback(error, false, null)
         } else {
             if (user) {
                 bcrypt.compare(password, user.password).then(function(result) {

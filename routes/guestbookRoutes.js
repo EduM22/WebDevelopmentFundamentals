@@ -2,19 +2,14 @@ const express = require('express');
 const guestbookRouter = express.Router();
 
 const blog = require('../models/blog')
+const auth = require('../models/auth')
 const csurf = require('csurf')
 
 const csrfProtection = csurf()
 
 guestbookRouter.get('/guestbook', csrfProtection, function(request, response) {
-    var page = 0
-    if (request.params.page == null) {
-        page = 0
-    } else {
-        page = request.params.page
-    }
 
-    blog.getAllGuestbookEntries(page, function(error, entries) {
+    blog.getAllGuestbookEntries(function(error, entries) {
         if (error) {
             response.render("500.hbs")
         } else {
@@ -24,7 +19,8 @@ guestbookRouter.get('/guestbook', csrfProtection, function(request, response) {
             } else {
                 const model = {
                     csrfToken: request.csrfToken(),
-                    row: entries
+                    row: entries,
+                    signedIn: true
                 }
                 response.render('guestbook.hbs', model)
                 //response.send(entries)
@@ -61,12 +57,51 @@ guestbookRouter.post('/guestbook', csrfProtection, function(request, response) {
 
         blog.newGuestbookEntry(validateName, validateContent, function(error, post) {
             if (error) {
-                response.send(error)
+                response.render('500.hbs')
             } else {
                 response.redirect("/guestbook")
             }
         })
 
+    }
+
+});
+
+guestbookRouter.get('/guestbook-entry/:id', csrfProtection, function(request, response) {
+    const id = request.params.id
+
+    if (id == "") {
+        response.render('guestbook_entry.hbs', {message: "You must specifie an id"})
+    } else {
+        blog.getGuestbookEntry(id, function(error, entry) {
+            if (error) {
+                response.render('500.hbs')
+            } else {
+                const model = {
+                    title: "Guestbook | entry",
+                    csrfToken: request.csrfToken(),
+                    entry
+                }
+                response.render('guestbook_entry.hbs', model)
+            }
+        })
+    }
+
+});
+
+guestbookRouter.post('/delete/guestbook-entry/:id', auth.isAuthenticated, csrfProtection, function(request, response) {
+    const id = request.params.id
+
+    if (id == "") {
+        response.render('guestbook.hbs')
+    } else {
+        blog.deleteGuestbookEntry(id, function(error) {
+            if (error) {
+                response.render('500.hbs')
+            } else {
+                response.redirect("/guestbook")
+            }
+        })
     }
 
 });

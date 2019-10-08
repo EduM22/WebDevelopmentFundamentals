@@ -82,6 +82,24 @@ exports.getPost = function(slug, callback){
 	})
 }
 
+exports.getPostsFromSearch = function(category, callback){
+
+    const query = "SELECT * FROM Posts WHERE post_category = ? ORDER BY post_id DESC"
+    const values = [category]
+
+    db.all(query, values, function(error, Posts){
+        if (error) {
+            callback(error, null)
+        } else {
+            if (Posts.length > 0) {
+                callback(null, Posts)
+            } else {
+                callback(null, null)
+            }
+        }
+    })
+}
+
 exports.updatePost = function(userId, slug, oldSlug, content, category, callback) {
 
     const query = "UPDATE Posts SET post_user = ?, post_slug = ?, post_content = ?, post_category = ? WHERE post_slug = ?"
@@ -98,7 +116,7 @@ exports.updatePost = function(userId, slug, oldSlug, content, category, callback
 
 exports.deletePost = function(slug, callback) {
 
-    const query = "DELETE FROM Posts WHERE post_slug = ?;"
+    const query = "DELETE FROM Posts WHERE post_slug = ?"
     const values = [slug]
 	
 	db.run(query, values, function(error){
@@ -110,12 +128,11 @@ exports.deletePost = function(slug, callback) {
 	})
 }
 
-exports.getAllGuestbookEntries = function(offset,callback) {
+exports.getAllGuestbookEntries = function(callback) {
 
-    const query = "SELECT * FROM Guestbook ORDER BY guestbook_id DESC LIMIT 5 OFFSET ?"
-    const values = [(offset * 5)]
+    const query = "SELECT * FROM Guestbook ORDER BY guestbook_id DESC LIMIT 5"
     
-    db.all(query, values, function(error, entries){
+    db.all(query, function(error, entries){
         if (error) {
             callback(error, null)
         } else {
@@ -124,6 +141,20 @@ exports.getAllGuestbookEntries = function(offset,callback) {
             } else {
                 callback(null, null)
             }
+        }
+    })
+}
+
+exports.getGuestbookEntry = function(id,callback) {
+
+    const query = "SELECT * FROM Guestbook WHERE guestbook_id = ?"
+    const values = [id]
+    
+    db.get(query, values, function(error, entry){
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, entry)
         }
     })
 }
@@ -144,21 +175,21 @@ exports.newGuestbookEntry = function(name, content, callback) {
 
 exports.deleteGuestbookEntry = function(id, callback) {
 
-    const query = "DELETE FROM Guestbook WHERE guestbook_id = ?;"
+    const query = "DELETE FROM Guestbook WHERE guestbook_id = ?"
     const values = [id]
 	
 	db.run(query, values, function(error){
         if (error) {
-            callback(error, null)
+            callback(error)
         } else {
-            callback(null, true)
+            callback(null)
         }
 	})
 }
 
 exports.getWebpageContent = function(webpage, callback) {
 
-    const query = "SELECT * FROM Pages WHERE page = ? LIMIT 1"
+    const query = "SELECT * FROM Pages WHERE name = ? LIMIT 1"
     const values = [webpage]
 	
 	db.get(query, values, function(error, content){
@@ -170,9 +201,23 @@ exports.getWebpageContent = function(webpage, callback) {
 	})
 }
 
+exports.editWebpageContent = function(webpage, content, callback) {
+
+    const query = "INSERT INTO Pages (name, content) VALUES (?, ?)"
+    const values = [webpage, content]
+	
+	db.run(query, values, function(error){
+        if (error) {
+            callback(error)
+        } else {
+            callback(null)
+        }
+	})
+}
+
 exports.getAllComments = function(postId, callback) {
 
-    const query = "SELECT * FROM Comments WHERE post_id = ?"
+    const query = "SELECT * FROM Comments WHERE post_id = ? ORDER BY comment_id DESC"
     const values = [postId]
 	
 	db.all(query, values, function(error, Comments){
@@ -180,6 +225,20 @@ exports.getAllComments = function(postId, callback) {
             callback(error, null)
         } else {
             callback(null, Comments)
+        }
+	})
+}
+
+exports.getComment = function(commentId, callback) {
+
+    const query = "SELECT * FROM Comments WHERE comment_id = ?"
+    const values = [commentId]
+	
+	db.get(query, values, function(error, Comment){
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, Comment)
         }
 	})
 }
@@ -193,6 +252,75 @@ exports.newComment = function(postId, email, username, content, callback) {
             callback(error, null)
         } else {
             callback(null, this.lastID)
+        }
+	})
+}
+
+exports.deleteComment = function(id, callback) {
+
+    const query = "DELETE FROM Comments WHERE comment_id = ?"
+    const values = [id]
+	
+	db.run(query, values, function(error){
+        if (error) {
+            callback(error)
+        } else {
+            callback(null)
+        }
+	})
+}
+
+exports.newContactRequest = function(email, content, callback) {
+
+    const query = "INSERT INTO Contact (contact_email, contact_content, created_date) VALUES (?, ?, ?)"
+    const values = [email, content, Date.now()]
+	
+	db.run(query, values, function(error){
+        if (error) {
+            callback(error)
+        } else {
+            callback(null)
+        }
+	})
+}
+
+exports.getContactRequest = function(id, callback) {
+
+    const query = "SELECT * FROM Contact WHERE contact_id = ?"
+    const values = [id]
+	
+	db.get(query, values, function(error, ContactRequest){
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, ContactRequest)
+        }
+	})
+}
+
+exports.getAllContactRequests = function(callback) {
+
+    const query = "SELECT * FROM Contact ORDER BY contact_id DESC"
+	
+	db.all(query, function(error, Comments){
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, Comments)
+        }
+	})
+}
+
+exports.deleteContactRequest = function(id, callback) {
+
+    const query = "DELETE FROM Contact WHERE contact_id = ?"
+    const values = [id]
+	
+	db.run(query, values, function(error){
+        if (error) {
+            callback(error)
+        } else {
+            callback(null)
         }
 	})
 }

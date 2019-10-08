@@ -1,0 +1,19 @@
+{{#if requests.length}}
+    <div class="column">
+    {{#each requests}}
+        <div class="column col-11" id="blog-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title h5"><a href="/contact-request/{{this.contact_id}}">{{this.contact_email}}</a></div>
+                </div>
+                <div class="card-body" id="card-content">
+                    <p id="text">{{this.contact_content}}</p>
+                </div>
+            </div>
+        </div>
+        <br>
+    {{/each}}
+    </div>
+{{else}}
+    <h1>No contact requests</h1>
+{{/if}}

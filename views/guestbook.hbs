@@ -1,4 +1,4 @@
-<a class="btn btn-primary" href="#example-modal-1">Write a guestbook entrie</a>
+<a class="btn btn-primary" href="#example-modal-1">Write a guestbook entry</a>
 
 <div class="modal" id="example-modal-1"><a class="modal-overlay" href="#modals" aria-label="Close"></a>
     <div class="modal-container" role="document">
@@ -17,11 +17,12 @@
         </div>
     </div>
 </div>
+<br>
+<br>
 
 {{#if row.length}}
     {{#each row}}
-        <p hidden>{{guestbook_id}}</p>
-        <h2>{{guestbook_name}}</h2>
+        <h2><a href="/guestbook-entry/{{guestbook_id}}">{{guestbook_name}}</a></h2>
         <p>{{guestbook_content}}</p>
     {{/each}}
 {{else}}
