@@ -53,7 +53,11 @@ exports.getAllPosts = function(offset, callback){
                             }
                         } else {
                             if (parseInt(offset) > 0) {
-                                callback(null, Posts, "/posts?page="+(parseInt(offset)-1), null)
+                                if (parseInt(offset)-1 == 0) {
+                                    callback(null, Posts, "/posts", null)
+                                } else {
+                                    callback(null, Posts, "/posts?page="+(parseInt(offset)-1), null)
+                                }
                             } else {
                                 callback(null, Posts, null, null)
                             }
@@ -203,9 +207,9 @@ exports.getWebpageContent = function(webpage, callback) {
 
 exports.editWebpageContent = function(webpage, content, callback) {
 
-    const query = "INSERT INTO Pages (name, content) VALUES (?, ?)"
-    const values = [webpage, content]
-	
+    const query = "UPDATE Pages SET content = ? WHERE name = ?"
+    const values = [content, webpage]
+
 	db.run(query, values, function(error){
         if (error) {
             callback(error)
@@ -234,11 +238,11 @@ exports.getComment = function(commentId, callback) {
     const query = "SELECT * FROM Comments WHERE comment_id = ?"
     const values = [commentId]
 	
-	db.get(query, values, function(error, Comment){
+	db.get(query, values, function(error, comment){
         if (error) {
             callback(error, null)
         } else {
-            callback(null, Comment)
+            callback(null, comment)
         }
 	})
 }
@@ -251,7 +255,7 @@ exports.newComment = function(postId, email, username, content, callback) {
         if (error) {
             callback(error, null)
         } else {
-            callback(null, this.lastID)
+            callback(null, this)
         }
 	})
 }

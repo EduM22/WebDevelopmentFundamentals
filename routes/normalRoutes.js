@@ -2,6 +2,8 @@ const express = require('express');
 const normalRouter = express.Router();
 
 const blog = require('../models/blog')
+const auth = require('../models/auth')
+
 const csurf = require('csurf')
 
 const csrfProtection = csurf()
@@ -34,16 +36,31 @@ normalRouter.get('/about', function(request, response) {
         if (error) {
             response.render('500.hbs')
         } else {
-            if (content) {
-                response.send(content)
-            } else {
-                response.send("Hi my name is johan and this is my blog<br>Default content<br>if you are the admin you can change it in the admin area")
+            const model = {
+                title: content.name,
+                content
             }
+            response.render('about.hbs', model)
         }
     })
 })
 
-normalRouter.get('/edit/:page', function(request, response) {
+normalRouter.get('/portfolio', function(request, response) {
+    blog.getWebpageContent("portfolio", function(error, content) {
+        if (error) {
+            response.render('500.hbs')
+        } else {
+            const model = {
+                title: content.name,
+                content
+            }
+            response.render('portfolio.hbs', model)
+        }
+    })
+    
+})
+
+normalRouter.get('/edit/:page', auth.isAuthenticated, csrfProtection, function(request, response) {
     const page = request.params.page
 
     if (page == "") {
@@ -54,16 +71,21 @@ normalRouter.get('/edit/:page', function(request, response) {
                 response.render('500.hbs')
             } else {
                 if (content) {
-                    response.send(content)
+                    const model = {
+                        title: content.name,
+                        csrfToken: request.csrfToken(),
+                        page: content
+                    }
+                    response.render('edit_pages.hbs', model)
                 } else {
-                    response.send("no content")
+                    response.redirect('/')
                 }
             }
         })
     }
 })
 
-normalRouter.post('/edit/:page', function(request, response) {
+normalRouter.post('/edit/:page', auth.isAuthenticated, csrfProtection, function(request, response) {
     const page = request.params.page
     const validationErrors = []
 
@@ -162,10 +184,6 @@ normalRouter.get('/search', function(request, response) {
             }
         })
     }
-})
-
-normalRouter.get('/portfolio', function(request, response) {
-    response.render('portfolio.hbs')
 })
 
 module.exports = normalRouter;

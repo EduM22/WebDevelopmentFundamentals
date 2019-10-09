@@ -1,1 +1,18 @@
-<h2>Portfolio/Projects</h2>
+<div class="column">
+    <div class="column col-11 col-sm-12" id="blog-content">
+        <h2>Portfolio/Projects</h2>
+        {{#if content}}
+        {{#if signedIn}}
+            <a href="/edit/{{content.name}}" class="btn">Edit page</a>
+        {{/if}}
+            {{{content.content}}}
+        {{else}}
+        <br>
+        {{#if errorMessage}}
+            <h2>{{errorMessage}}</h2>
+        {{else}}
+            <h2>This is the default content. change it in the admin area</h2>
+        {{/if}}
+        {{/if}}
+    </div>
+</div>

@@ -42,18 +42,22 @@ commentRouter.get('/comment/:commentId', csrfProtection, function(request, respo
 
     const commentId = request.params.commentId
 
-    if (commentId == "") {
-
+    if (commentId == " ") {
+        response.send("you must specifie an id")
     } else {
         blog.getComment(commentId, function(error, comment) {
             if (error) {
                 response.render('500.hbs')
             } else {
-                const model = {
-                    csrfToken: request.csrfToken(),
-                    comment
+                if (comment == null) {
+                    response.render('comment.hbs', {errorMessage: "Cant find a comment with that id"})
+                } else {
+                    const model = {
+                        csrfToken: request.csrfToken(),
+                        comment
+                    }
+                    response.render('comment.hbs', model)
                 }
-                response.render('comment.hbs', model)
             }
         })
     }
@@ -81,7 +85,7 @@ commentRouter.get('/new/comment/:postId', csrfProtection, function(request, resp
 
     const postId = request.params.postId
 
-    if (postId == "") {
+    if (postId == " ") {
         const model = {
             title: 'New Comment',
             message: 'You must specifie a id',
@@ -122,11 +126,11 @@ commentRouter.post('/new/comment/:postId', csrfProtection, function(request, res
         }
     
         if (validateUsername == "") {
-            validationErrors.push("slug is empty")
+            validationErrors.push("Name is empty")
         }
     
         if (validateEmail == "") {
-            validationErrors.push("Choose an category ")
+            validationErrors.push("Email is empty")
         }
     
         if (validationErrors.length > 0) {
@@ -147,7 +151,8 @@ commentRouter.post('/new/comment/:postId', csrfProtection, function(request, res
                 if (error) {
                     response.render('500.hbs')
                 } else {
-                    response.redirect("/posts/")
+                    response.send({Post: post})
+                    //response.redirect("/posts/")
                 }
             })
         }

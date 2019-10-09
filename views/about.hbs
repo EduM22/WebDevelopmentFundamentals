@@ -1,19 +1,18 @@
-<div class="card">
-    <ul class="breadcrumb">
-        <li class="breadcrumb-item"><p>Home</p></li>
-        <li class="breadcrumb-item"><span class="label label-rounded label-primary">About</span></li>
-    </ul>
-    <div class="card-image">
-        <img src="img/osx-el-capitan.jpg" class="img-responsive">
-    </div>
-    <div class="card-header">
-        <div class="card-title h5">...</div>
-        <div class="card-subtitle text-gray">...</div>
-    </div>
-    <div class="card-body">
-        ...
-    </div>
-    <div class="card-footer">
-        <button class="btn btn-primary">...</button>
+<div class="column">
+    <div class="column col-11 col-sm-12" id="blog-content">
+        <h2>About</h2>
+        {{#if content}}
+        {{#if signedIn}}
+            <a href="/edit/{{content.name}}" class="btn">Edit page</a>
+        {{/if}}
+            {{{content.content}}}
+        {{else}}
+        <br>
+        {{#if errorMessage}}
+            <h2>{{errorMessage}}</h2>
+        {{else}}
+            <h2>This is the default content. change it in the admin area</h2>
+        {{/if}}
+        {{/if}}
     </div>
 </div>

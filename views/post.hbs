@@ -1,7 +1,7 @@
 <div class="column">
     <div class="column col-11" id="blog-content">
         <button class="btn btn-primary"><a href="/posts">Go back</a></button>
-{{#if Post}}
+    {{#if Post}}
         <div class="card">
             <div class="card-header">
                 <div class="card-title h5">{{Post.post_slug}}</div>
@@ -26,8 +26,12 @@
             </div>
             <iframe src="/comments/{{Post.post_id}}" height="300px" style="margin-top:50px;"></iframe> 
         </div>
-{{else}}
-    <h1>No blog posts yet</h1>
-{{/if}}
+    {{else}}
+    {{#if errorMessage}}
+        <h2>{{errorMessage}}</h2>
+    {{else}}
+        <h2>No blog posts yet</h2>
+    {{/if}}
+    {{/if}}
     </div>
 </div>

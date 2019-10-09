@@ -124,12 +124,16 @@ blogRouter.get('/post/:slug', csrfProtection, function(request, response) {
         if (error) {
             response.render('500.hbs')
         } else {
-            const model = {
-                title: 'Home',
-                csrfToken: request.csrfToken(),
-                Post,
+            if (Post == null) {
+                response.render('post.hbs', {errorMessage: "Cant find a post with that id"})
+            } else {
+                const model = {
+                    title: 'Home',
+                    csrfToken: request.csrfToken(),
+                    Post,
+                }
+                response.render('post.hbs', model)
             }
-            response.render('post.hbs', model)
         }
     })
 });
