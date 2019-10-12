@@ -1,44 +1,48 @@
-{{#if validationErrors.length}}
+<div class="column">
+    <div class="column col-11">
+    {{#if validationErrors.length}}
 
-<p>{{validationErrors}}</p>
+    <p>{{validationErrors}}</p>
 
-<form action="/login" method="POST">
-    <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    {{#if username.length}}
-    <div class="form-group">
-        <label class="form-label" for="usernameInput">Username</label>
-        <input class="form-input is-error" id="usernameInput" type="text" name="username" placeholder="Username" value="{{username}}" required>
-    </div>
+    <form action="/login" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        {{#if username.length}}
+        <div class="form-group">
+            <label class="form-label" for="usernameInput">Username</label>
+            <input class="form-input is-error" id="usernameInput" type="text" name="username" placeholder="Username" value="{{username}}" required>
+        </div>
+        {{else}}
+        <div class="form-group">
+            <label class="form-label" for="usernameInput">Username</label>
+            <input class="form-input is-error" id="usernameInput" type="text" name="username" placeholder="Username" required>
+        </div>
+        {{/if}}
+        <div class="form-group">
+            <label class="form-label" for="passwordInput">Password</label>
+            <input class="form-input is-error" id="passwordInput" type="password" name="password" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <input class="form-submit" type="submit" placeholder="Login">
+        </div>
+    </form>
+
     {{else}}
-     <div class="form-group">
-        <label class="form-label" for="usernameInput">Username</label>
-        <input class="form-input is-error" id="usernameInput" type="text" name="username" placeholder="Username" required>
-    </div>
+
+    <form action="/login" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <div class="form-group">
+            <label class="form-label" for="usernameInput">Username</label>
+            <input class="form-input" id="usernameInput" type="text" name="username" placeholder="Username" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="passwordInput">Password</label>
+            <input class="form-input" id="passwordInput" type="password" name="password" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <input class="btn" type="submit" value="Login">
+        </div>
+    </form>
+
     {{/if}}
-    <div class="form-group">
-        <label class="form-label" for="passwordInput">Password</label>
-        <input class="form-input is-error" id="passwordInput" type="password" name="password" placeholder="Password" required>
     </div>
-    <div class="form-group">
-        <input class="form-submit" type="submit" placeholder="Login">
-    </div>
-</form>
-
-{{else}}
-
-<form action="/login" method="POST">
-    <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <div class="form-group">
-        <label class="form-label" for="usernameInput">Username</label>
-        <input class="form-input" id="usernameInput" type="text" name="username" placeholder="Username" required>
-    </div>
-    <div class="form-group">
-        <label class="form-label" for="passwordInput">Password</label>
-        <input class="form-input" id="passwordInput" type="password" name="password" placeholder="Password" required>
-    </div>
-    <div class="form-group">
-        <input class="btn" type="submit" value="Login">
-    </div>
-</form>
-
-{{/if}}
+</div>

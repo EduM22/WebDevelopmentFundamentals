@@ -138,8 +138,7 @@ adminRouter.post('/login', auth.alreadyAuthenticated, csrfProtection, function(r
             })
 
         } else {
-            validationErrors.push("Password must be 6 charcters or longer")
-
+            validationErrors.push("Wrong username/password")
             const model = {
                 validationErrors,
                 username: valdateUsername,

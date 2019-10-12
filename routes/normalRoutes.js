@@ -169,20 +169,38 @@ normalRouter.post('/contact', csrfProtection, function(request, response) {
 normalRouter.get('/search', function(request, response) {
     const searchQuestion = request.query.q
 
-    if (searchQuestion == "") {
-        response.send("No search question")
-    } else {
-        blog.getPostsFromSearch(searchQuestion, function(error, Posts) {
-            if (error) {
-                response.render('500.hbs')
-            } else {
-                const model = {
-                    title: "Posts from search",
-                    Posts
+    if (isNaN(Date.parse(searchQuestion))) {
+        if (searchQuestion == "") {
+            response.send("No search question")
+        } else {
+            blog.getPostsFromSearch(searchQuestion, 0, function(error, Posts) {
+                if (error) {
+                    response.render('500.hbs')
+                } else {
+                    const model = {
+                        title: "Posts from search",
+                        Posts
+                    }
+                    response.render("posts.hbs", model)
                 }
-                response.render("posts.hbs", model)
-            }
-        })
+            })
+        }
+    } else {
+        if (searchQuestion == "") {
+            response.send("No search question")
+        } else {
+            blog.getPostsFromSearch(Date.parse(searchQuestion), 1, function(error, Posts) {
+                if (error) {
+                    response.render('500.hbs')
+                } else {
+                    const model = {
+                        title: "Posts from search",
+                        Posts
+                    }
+                    response.render("posts.hbs", model)
+                }
+            })
+        }
     }
 })
 

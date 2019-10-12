@@ -151,8 +151,7 @@ commentRouter.post('/new/comment/:postId', csrfProtection, function(request, res
                 if (error) {
                     response.render('500.hbs')
                 } else {
-                    response.send({Post: post})
-                    //response.redirect("/posts/")
+                    response.redirect("/comments/"+postId)
                 }
             })
         }

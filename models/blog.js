@@ -86,22 +86,42 @@ exports.getPost = function(slug, callback){
 	})
 }
 
-exports.getPostsFromSearch = function(category, callback){
+exports.getPostsFromSearch = function(category, dateSearchOrCategory, callback) {
 
-    const query = "SELECT * FROM Posts WHERE post_category = ? ORDER BY post_id DESC"
-    const values = [category]
+    if (dateSearchOrCategory == 0) {
+        const query = "SELECT * FROM Posts WHERE post_category = ? ORDER BY post_id DESC"
+        const values = [category]
 
-    db.all(query, values, function(error, Posts){
-        if (error) {
-            callback(error, null)
-        } else {
-            if (Posts.length > 0) {
-                callback(null, Posts)
+        db.all(query, values, function(error, Posts){
+            if (error) {
+                callback(error, null)
             } else {
-                callback(null, null)
+                if (Posts.length > 0) {
+                    callback(null, Posts)
+                } else {
+                    callback(null, null)
+                }
             }
-        }
-    })
+        })
+    } else if (dateSearchOrCategory == 1) {
+        const query = "SELECT * FROM Posts WHERE post_date >= ? AND post_date <= ? ORDER BY post_id DESC"
+        const d2 = category + 31556952000
+        const values = [category, d2]
+
+        db.all(query, values, function(error, Posts){
+            if (error) {
+                callback(error, null)
+            } else {
+                if (Posts.length > 0) {
+                    callback(null, Posts)
+                } else {
+                    callback(null, null)
+                }
+            }
+        })
+    } else {
+        callback(null, null)
+    }
 }
 
 exports.updatePost = function(userId, slug, oldSlug, content, category, callback) {
@@ -122,12 +142,18 @@ exports.deletePost = function(slug, callback) {
 
     const query = "DELETE FROM Posts WHERE post_slug = ?"
     const values = [slug]
-	
+
 	db.run(query, values, function(error){
         if (error) {
             callback(error, null)
         } else {
-            callback(null, this.lastID)
+            deleteAllComments(this.lastID, function(error) {
+                if (error) {
+                    callback(error, null)
+                } else {
+                    callback(null, this.lastID)
+                }
+            })
         }
 	})
 }
@@ -263,6 +289,20 @@ exports.newComment = function(postId, email, username, content, callback) {
 exports.deleteComment = function(id, callback) {
 
     const query = "DELETE FROM Comments WHERE comment_id = ?"
+    const values = [id]
+	
+	db.run(query, values, function(error){
+        if (error) {
+            callback(error)
+        } else {
+            callback(null)
+        }
+	})
+}
+
+exports.deleteAllComments = function(id, callback) {
+
+    const query = "DELETE FROM Comments WHERE post_id = ?"
     const values = [id]
 	
 	db.run(query, values, function(error){

@@ -1,11 +1,11 @@
 const sqlite3 = require('sqlite3').verbose()
 const bcrypt = require('bcrypt')
 
-const db = new sqlite3.Database('db-blog.db', (error) => {
+const db = new sqlite3.Database('db-blog.db', async (error) => {
     if (error) {
         console.log(error.message)
     } else {
-        db.run("CREATE TABLE IF NOT EXISTS Users (\
+        await db.run("CREATE TABLE IF NOT EXISTS Users (\
             uid INTEGER PRIMARY KEY AUTOINCREMENT,\
             username TEXT UNIQUE NOT NULL,\
             password TEXT NOT NULL,\
@@ -16,7 +16,7 @@ const db = new sqlite3.Database('db-blog.db', (error) => {
         });
 
 
-        db.run("CREATE TABLE IF NOT EXISTS Posts (\
+        await db.run("CREATE TABLE IF NOT EXISTS Posts (\
             post_id INTEGER PRIMARY KEY AUTOINCREMENT,\
             post_user INT NOT NULL,\
             post_slug TEXT NOT NULL UNIQUE,\
@@ -30,7 +30,7 @@ const db = new sqlite3.Database('db-blog.db', (error) => {
         });
 
 
-        db.run("CREATE TABLE IF NOT EXISTS Comments (\
+        await db.run("CREATE TABLE IF NOT EXISTS Comments (\
             comment_id INTEGER PRIMARY KEY AUTOINCREMENT,\
             post_id INT NOT NULL,\
             comment_email TEXT NOT NULL,\
@@ -44,7 +44,7 @@ const db = new sqlite3.Database('db-blog.db', (error) => {
         });
             
 
-        db.run("CREATE TABLE IF NOT EXISTS Pages (\
+        await db.run("CREATE TABLE IF NOT EXISTS Pages (\
             id INTEGER PRIMARY KEY AUTOINCREMENT,\
             name TEXT NOT NULL,\
             content TEXT NOT NULL)", function(error) {
@@ -54,7 +54,7 @@ const db = new sqlite3.Database('db-blog.db', (error) => {
         });
 
 
-        db.run("CREATE TABLE IF NOT EXISTS Guestbook (\
+        await db.run("CREATE TABLE IF NOT EXISTS Guestbook (\
             guestbook_id INTEGER PRIMARY KEY AUTOINCREMENT,\
             guestbook_name TEXT NOT NULL,\
             guestbook_content TEXT NOT NULL,\
@@ -65,7 +65,7 @@ const db = new sqlite3.Database('db-blog.db', (error) => {
         });
             
 
-        db.run("CREATE TABLE IF NOT EXISTS Contact (\
+        await db.run("CREATE TABLE IF NOT EXISTS Contact (\
             contact_id INTEGER PRIMARY KEY AUTOINCREMENT,\
             contact_email TEXT NOT NULL,\
             contact_content TEXT NOT NULL,\
@@ -104,9 +104,7 @@ db.get(query, values, function(error, user){
     }
 })
 
-
 const queryCheckIfExsistsAbout = "SELECT * FROM Pages WHERE name='about' LIMIT 1"
-
 db.get(queryCheckIfExsistsAbout, function(error, row) {
     if (error) {
         const q1 = "INSERT INTO Pages (name, content) VALUES (?, ?)"
@@ -125,7 +123,6 @@ db.get(queryCheckIfExsistsAbout, function(error, row) {
 })
 
 const queryCheckIfExsistsPortfolio = "SELECT * FROM Pages WHERE name='portfolio' LIMIT 1"
-
 db.get(queryCheckIfExsistsPortfolio, function(error, row) {
     if (error) {
         const q1 = "INSERT INTO Pages (name, content) VALUES (?, ?)"

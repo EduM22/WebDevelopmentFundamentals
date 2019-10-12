@@ -1,27 +1,23 @@
-<h2>Hi my name is Johan and this is my blog</h2>
-
-<a href="/about">More info about me</a>
-
-
-<h3>Latest blog post</h3>
-{{#if Post}}
-    <div class="column">
-        <div class="column col-11" id="blog-content">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title h5"><a href="/post/{{Post.post_slug}}">{{Post.post_slug}}</a></div>
-                    <div class="card-subtitle text-gray"><a href="/search?q={{Post.post_category}}">{{Post.post_category}}</a></div>
-                </div>
-                <div class="card-body" id="card-content">
-                    <p id="text">{{{Post.post_content}}}</p>
-                </div>
+<div class="column">
+    <div class="column col-11" id="blog-content">
+        <h2>Hi my name is Johan and this is my blog</h2>
+        <a href="/about">More info about me</a>
+        <h3>Latest blog post</h3>
+        {{#if Post}}
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title h5"><a href="/post/{{Post.post_slug}}">{{Post.post_slug}}</a></div>
+                <div class="card-subtitle text-gray"><a href="/search?q={{Post.post_category}}">{{Post.post_category}}</a></div>
             </div>
-            <div class="button-more-posts">
-                <a href="/posts" class="btn btn-primary">More Posts</a>
+            <div class="card-body" id="card-content">
+                <p id="text">{{{Post.post_content}}}</p>
             </div>
         </div>
+        <div class="button-more-posts">
+            <a href="/posts" class="btn btn-primary">More Posts</a>
+        </div>
+        {{else}}
+        <h1>No blog posts yet</h1>
+        {{/if}}
     </div>
-
-{{else}}
-    <h1>No blog posts yet</h1>
-{{/if}}
+</div>

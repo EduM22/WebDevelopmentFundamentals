@@ -34,6 +34,9 @@ blogRouter.post('/new/post', auth.isAuthenticated, csrfProtection, function(requ
     if (validationErrors.length > 0) {
         const model = {
             validationErrors,
+            content: validateContent,
+            slug: validateSlug,
+            category: validateCategory,
             layout: 'clean.hbs'
         }
 
@@ -43,7 +46,21 @@ blogRouter.post('/new/post', auth.isAuthenticated, csrfProtection, function(requ
 
         blog.newPost(request.session.user.uid, validateSlug, validateContent, validateCategory, function(error, post) {
             if (error) {
-                response.render('500.hbs')
+                if (error.code == 'SQLITE_CONSTRAINT') {
+                    validationErrors.push("You cant choose that slug name it already exsists")
+                    const model = {
+                        validationErrors,
+                        content: validateContent,
+                        slug: validateSlug,
+                        category: validateCategory,
+                        layout: 'clean.hbs'
+                    }
+            
+                    response.render('new_post.hbs', model)
+                } else {
+                    response.render('500.hbs')
+                }
+
             } else {
                 response.redirect("/post/"+validateSlug)
             }

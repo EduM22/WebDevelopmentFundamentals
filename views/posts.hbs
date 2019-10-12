@@ -1,36 +1,34 @@
-{{#if message}}
-    <h3>{{message}}</h3>
-{{/if}}
-{{#if Posts.length}}
-    <div class="column">
-    {{#each Posts}}
-        <div class="column col-11" id="blog-content">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title h5"><a href="/post/{{this.post_slug}}">{{this.post_slug}}</a></div>
-                    <div class="card-subtitle text-gray"><a href="/search?q={{this.post_category}}">{{this.post_category}}</a></div>
+ <div class="column">
+      <div class="column col-11">
+        {{#if message}}
+            <h3>{{message}}</h3>
+        {{/if}}
+        {{#if Posts.length}}
+            {{#each Posts}}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title h5"><a href="/post/{{this.post_slug}}">{{this.post_slug}}</a></div>
+                        <div class="card-subtitle text-gray"><a href="/search?q={{this.post_category}}">{{this.post_category}}</a></div>
+                    </div>
+                    <div class="card-body" id="card-content">
+                        <p id="text">{{{this.post_content}}}</p>
+                    </div>
+                    <br>
                 </div>
-                <div class="card-body" id="card-content">
-                    <p id="text">{{{this.post_content}}}</p>
-                </div>
-                <!--<div class="card-footer">
-                    <button class="btn btn-primary"><a href="/new/comment/{{this.post_id}}">Comment</a></button>
-                </div>-->
+            {{/each}}
+            {{#if lastUrl}}
+            <div class="button-more-posts">
+                <a href="{{lastUrl}}" class="btn btn-primary">last page</a>
             </div>
-        </div>
-        <br>
-    {{/each}}
-    {{#if lastUrl}}
-        <div class="button-more-posts">
-            <a href="{{lastUrl}}" class="btn btn-primary">last page</a>
-        </div>
-    {{/if}}
-    {{#if nextUrl}}
-        <div class="button-more-posts">
-            <a href="{{nextUrl}}" class="btn btn-primary">next page</a>
-        </div>
-    {{/if}}
+            {{/if}}
+            <br>
+            {{#if nextUrl}}
+            <div class="button-more-posts">
+                <a href="{{nextUrl}}" class="btn btn-primary">next page</a>
+            </div>
+            {{/if}}
+        {{else}}
+        <h1>No blog posts</h1>
+        {{/if}}
     </div>
-{{else}}
-    <h1>No blog posts</h1>
-{{/if}}
+</div>
