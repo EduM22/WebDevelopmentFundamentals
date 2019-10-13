@@ -116,7 +116,7 @@ blogRouter.post('/edit/post/:slug', auth.isAuthenticated, csrfProtection, functi
         
     } else {
 
-        blog.updatePost(request.session.user.uid, validateSlug, oldSlug, validateContent, validateCategory, function(error, post) {
+        blog.updatePost(request.session.user.uid, validateSlug, oldSlug, validateContent, validateCategory, function(error, postId) {
             if (error) {
                 response.render('500.hbs')
             } else {
@@ -128,11 +128,17 @@ blogRouter.post('/edit/post/:slug', auth.isAuthenticated, csrfProtection, functi
 })
 
 blogRouter.post('/delete/post/:slug', auth.isAuthenticated, csrfProtection, function(request, response) {
-    blog.deletePost(request.params.slug, function(error) {
+    blog.deletePost(request.params.slug, function(error, id) {
         if (error) {
             response.render('500.hbs')
         } else {
-            response.redirect('/posts')
+            blog.deleteAllComments(id, function(error) {
+                if (error) {
+                    response.render('500.hbs')
+                } else {
+                    response.redirect('/posts')
+                }
+            })
         }
     })
 })

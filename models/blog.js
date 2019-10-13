@@ -157,17 +157,11 @@ exports.deletePost = function(slug, callback) {
     const query = "DELETE FROM BlogPosts WHERE slug = ?"
     const values = [slug]
 
-	db.run(query, values, function(error) {
+	db.run(query, values, function(error, id) {
         if (error) {
             callback(error, null)
         } else {
-            deleteAllComments(this.lastID, function(error) {
-                if (error) {
-                    callback(error, null)
-                } else {
-                    callback(null, this.lastID)
-                }
-            })
+            callback(null, this.lastID)
         }
 	})
 }

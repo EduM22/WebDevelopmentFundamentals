@@ -7,16 +7,16 @@
     {{/each}}
 </ul>
 
-<form action="/edit/post/{{Post.post_slug}}" method="POST">
+<form action="/edit/post/{{Post.slug}}" method="POST">
 <input type="hidden" name="_csrf" value="{{csrfToken}}">
   <fieldset>
     <div class="form-group">
       <label class="form-label" for="input-example-19">Slug</label>
-      <input class="form-input is-error" type="text" id="input-example-19" placeholder="url name" name="slug" value="{{Post.post_slug}}">
+      <input class="form-input is-error" type="text" id="input-example-19" placeholder="url name" name="slug" value="{{Post.slug}}">
     </div>
     <div class="form-group">
         <label class="form-label" for="category-select">Category</label>
-        <select class="form-select is-error" id="category-select" name="category" value="{{Post.post_category}}">
+        <select class="form-select is-error" id="category-select" name="category" value="{{Post.category}}">
             <option>Choose an category</option>
             <option>All</option>
             <option>Tech</option>
@@ -25,7 +25,7 @@
     </div>
     <div class="form-group">
       <label class="form-label" for="input-post-content">Message</label>
-      <textarea class="form-input is-error" id="input-post-content" placeholder="Textarea" rows="10" name="content">{{Post.post_content}}</textarea>
+      <textarea class="form-input is-error" id="input-post-content" placeholder="Textarea" rows="10" name="content">{{Post.content}}</textarea>
     </div>
   </fieldset>
   <div class="form-group">
@@ -35,16 +35,16 @@
 
 {{else}}
 
-<form action="/edit/post/{{Post.post_slug}}" method="POST">
+<form action="/edit/post/{{Post.slug}}" method="POST">
 <input type="hidden" name="_csrf" value="{{csrfToken}}">
   <fieldset>
     <div class="form-group">
       <label class="form-label" for="input-example-19">Slug</label>
-      <input class="form-input" type="text" id="input-example-19" placeholder="url name" name="slug" value="{{Post.post_slug}}">
+      <input class="form-input" type="text" id="input-example-19" placeholder="url name" name="slug" value="{{Post.slug}}">
     </div>
     <div class="form-group">
         <label class="form-label" for="category-select">Category</label>
-        <select class="form-select" id="category-select" name="category" value="{{Post.post_category}}">
+        <select class="form-select" id="category-select" name="category" value="{{Post.category}}">
             <option>All</option>
             <option>Tech</option>
             <option>Random</option>
@@ -52,7 +52,7 @@
     </div>
     <div class="form-group">
       <label class="form-label" for="input-example-20">Message</label>
-      <textarea class="form-input" id="input-example-20" placeholder="Textarea" rows="10" name="content">{{Post.post_content}}</textarea>
+      <textarea class="form-input" id="input-example-20" placeholder="Textarea" rows="10" name="content">{{Post.content}}</textarea>
     </div>
   </fieldset>
   <div class="form-group">
