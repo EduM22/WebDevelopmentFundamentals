@@ -6,7 +6,7 @@
                 {{#if signedIn}}
                 <div class="card-header">
                     <div class="card-title h6">
-                        <form action="/delete/guestbook-entry/{{entry.guestbook_id}}" method="POST">
+                        <form action="/delete/guestbook-entry/{{entry.id}}" method="POST">
                             <input type="hidden" name="_csrf" value="{{csrfToken}}">
                             <input class="btn" type="submit" value="Delete Post">
                         </form>
@@ -14,8 +14,8 @@
                 </div>
                 {{/if}}
                 <div class="card-body" id="card-content">
-                    <h3>{{entry.guestbook_name}}</h3>
-                    <p id="text">{{entry.guestbook_content}}</p>
+                    <h3>{{entry.name}}</h3>
+                    <p id="text">{{entry.content}}</p>
                 </div>
             </div>
     {{else}}

@@ -1,0 +1,45 @@
+{{#if validationErrors.length}}
+
+<ul>
+    {{#each validationErrors}}
+    <li>{{this}}</li>
+    {{/each}}
+</ul>
+
+<form action="" method="POST" encType="multipart/form-data">
+<input type="hidden" name="_csrf" value="{{csrfToken}}">
+<fieldset>
+    <div class="form-group">
+      <label class="form-label" for="name">Name</label>
+      <input class="form-input is-error" type="text" id="name" placeholder="name" name="filename" value="{{name}}">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="file">File</label>
+      <input class="form-input is-error" type="file" name="uploadedFile">
+    </div>
+</fieldset>
+  <div class="form-group">
+        <input class="btn" type="submit" value="Upload">
+    </div>
+</form>
+
+{{else}}
+
+<form action="" method="POST" encType="multipart/form-data">
+<input type="hidden" name="_csrf" value="{{csrfToken}}">
+<fieldset>
+    <div class="form-group">
+      <label class="form-label" for="name">Name</label>
+      <input class="form-input" type="text" id="name" placeholder="name" name="filename">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="file">File</label>
+      <input class="form-input" type="file" name="uploadedFile">
+    </div>
+</fieldset>
+  <div class="form-group">
+        <input class="btn" type="submit" value="Upload">
+    </div>
+</form>
+
+{{/if}}

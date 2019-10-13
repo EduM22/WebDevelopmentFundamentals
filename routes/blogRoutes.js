@@ -37,6 +37,7 @@ blogRouter.post('/new/post', auth.isAuthenticated, csrfProtection, function(requ
             content: validateContent,
             slug: validateSlug,
             category: validateCategory,
+            csrfToken: request.csrfToken(),
             layout: 'clean.hbs'
         }
 
@@ -53,6 +54,7 @@ blogRouter.post('/new/post', auth.isAuthenticated, csrfProtection, function(requ
                         content: validateContent,
                         slug: validateSlug,
                         category: validateCategory,
+                        csrfToken: request.csrfToken(),
                         layout: 'clean.hbs'
                     }
             

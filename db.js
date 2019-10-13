@@ -1,11 +1,11 @@
 const sqlite3 = require('sqlite3').verbose()
 const bcrypt = require('bcrypt')
 
-const db = new sqlite3.Database('db-blog.db', async (error) => {
+const db = new sqlite3.Database('db-blog.db', (error) => {
     if (error) {
         console.log(error.message)
     } else {
-        await db.run("CREATE TABLE IF NOT EXISTS Users (\
+        db.run("CREATE TABLE IF NOT EXISTS Users (\
             uid INTEGER PRIMARY KEY AUTOINCREMENT,\
             username TEXT UNIQUE NOT NULL,\
             password TEXT NOT NULL,\
@@ -16,128 +16,164 @@ const db = new sqlite3.Database('db-blog.db', async (error) => {
         });
 
 
-        await db.run("CREATE TABLE IF NOT EXISTS Posts (\
-            post_id INTEGER PRIMARY KEY AUTOINCREMENT,\
-            post_user INT NOT NULL,\
-            post_slug TEXT NOT NULL UNIQUE,\
-            post_content TEXT NOT NULL,\
-            post_category TEXT NOT NULL,\
+        db.run("CREATE TABLE IF NOT EXISTS BlogPosts (\
+            id INTEGER PRIMARY KEY AUTOINCREMENT,\
+            user INT NOT NULL,\
+            slug TEXT NOT NULL UNIQUE,\
+            content TEXT NOT NULL,\
+            category TEXT NOT NULL,\
             post_date DATE NOT NULL,\
-            FOREIGN KEY (post_user) REFERENCES Users(uid))", function(error) {
+            FOREIGN KEY (user) REFERENCES Users(uid))", function(error) {
             if (error) {
                 console.log(error.message)
             }
         });
 
 
-        await db.run("CREATE TABLE IF NOT EXISTS Comments (\
-            comment_id INTEGER PRIMARY KEY AUTOINCREMENT,\
+        db.run("CREATE TABLE IF NOT EXISTS BlogPostComments (\
+            id INTEGER PRIMARY KEY AUTOINCREMENT,\
             post_id INT NOT NULL,\
-            comment_email TEXT NOT NULL,\
-            comment_username TEXT NOT NULL,\
-            comment_content TEXT NOT NULL,\
-            comment_date DATE NOT NULL,\
-            FOREIGN KEY (post_id) REFERENCES Posts(post_id))", function(error) {
+            email TEXT NOT NULL,\
+            username TEXT NOT NULL,\
+            content TEXT NOT NULL,\
+            post_date DATE NOT NULL,\
+            FOREIGN KEY (post_id) REFERENCES BlogPosts(id))", function(error) {
             if (error) {
                 console.log(error.message)
             }
         });
             
 
-        await db.run("CREATE TABLE IF NOT EXISTS Pages (\
+        db.run("CREATE TABLE IF NOT EXISTS PageContent (\
             id INTEGER PRIMARY KEY AUTOINCREMENT,\
             name TEXT NOT NULL,\
             content TEXT NOT NULL)", function(error) {
             if (error) {
                 console.log(error.message)
+            } else {
+                const queryPortfolio = "INSERT INTO PageContent (name, content) VALUES (?, ?)"
+                const valuePortfolio = ['portfolio', 'default content']
+                db.run(queryPortfolio, valuePortfolio, function(error) {
+                    if (error) {
+                        console.log(error.message)
+                        console.log('No default content')
+                    } else {
+                        
+                    }
+                })
+                const queryAbout = "INSERT INTO PageContent (name, content) VALUES (?, ?)"
+                const valueAbout = ['about', 'default content']
+                db.run(queryAbout, valueAbout, function(error) {
+                    if (error) {
+                        console.log(error.message)
+                        console.log('No default content')
+                    } else {
+                       
+                    }
+                })
             }
         });
 
 
-        await db.run("CREATE TABLE IF NOT EXISTS Guestbook (\
-            guestbook_id INTEGER PRIMARY KEY AUTOINCREMENT,\
-            guestbook_name TEXT NOT NULL,\
-            guestbook_content TEXT NOT NULL,\
-            created_date DATE NOT NULL)", function(error) {
+        db.run("CREATE TABLE IF NOT EXISTS GuestbookEntries (\
+            id INTEGER PRIMARY KEY AUTOINCREMENT,\
+            name TEXT NOT NULL,\
+            content TEXT NOT NULL,\
+            post_date DATE NOT NULL)", function(error) {
             if (error) {
                 console.log(error.message)
             }
         });
             
 
-        await db.run("CREATE TABLE IF NOT EXISTS Contact (\
-            contact_id INTEGER PRIMARY KEY AUTOINCREMENT,\
-            contact_email TEXT NOT NULL,\
-            contact_content TEXT NOT NULL,\
-            created_date DATE NOT NULL)", function(error) {
+        db.run("CREATE TABLE IF NOT EXISTS ContactRequests (\
+            id INTEGER PRIMARY KEY AUTOINCREMENT,\
+            email TEXT NOT NULL,\
+            content TEXT NOT NULL,\
+            post_date DATE NOT NULL)", function(error) {
+            if (error) {
+                console.log(error.message)
+            }
+        })
+
+        db.run("CREATE TABLE IF NOT EXISTS FileUploads (\
+            id INTEGER PRIMARY KEY AUTOINCREMENT,\
+            name TEXT NOT NULL UNIQUE,\
+            location TEXT NOT NULL)", function(error) {
             if (error) {
                 console.log(error.message)
             }
         })
     }
-})
 
-const query = "SELECT * FROM Users WHERE username = ? LIMIT 1"
-const values = ["root"]
-	
-db.get(query, values, function(error, user){
-    if (error) {
-        bcrypt.hash("toor123", 10, function(error, hash) {
-            if (error) {
-                console.log("error with bcrypt hash creation please delete db and try again")
-            } else {
-                const query = "INSERT INTO Users (username, password, created_date) VALUES (?, ?, ?)"
-                const values = ["root", hash, Date.now()]
-                
-                db.run(query, values, function(error){
-                    if (error) {
-                        console.log(error.message)
-                        console.log("error with account creation please delete db and try again")
-                    } else {
-                        console.log("you can now login with username: root, password: toor123")
-                    }
-                })
-            }
-        })
-    } else {
-        console.log("you can now login with username: root, password: toor123")
-    }
-})
+    /*
+    const queryCheckIfExsistsPortfolio = "SELECT * FROM PageContent WHERE name='portfolio' LIMIT 1"
+    db.get(queryCheckIfExsistsPortfolio, function(error, row) {
+        if (error) {
+            const queryPortfolio = "INSERT INTO PageContent (name, content) VALUES (?, ?)"
+            const valuePortfolio = ['portfolio', 'default content']
+            db.run(queryPortfolio, valuePortfolio, function(error) {
+                if (error) {
+                    console.log(error.message)
+                    console.log('No default content')
+                } else {
+                    console.log('Portfolio default content')
+                }
+            })
+        } else {
+            // nothing
+            console.log('error portfolio')
+        }
+    })*/
 
-const queryCheckIfExsistsAbout = "SELECT * FROM Pages WHERE name='about' LIMIT 1"
-db.get(queryCheckIfExsistsAbout, function(error, row) {
-    if (error) {
-        const q1 = "INSERT INTO Pages (name, content) VALUES (?, ?)"
-        const v1 = ['about', 'default content']
-        db.run(q1, v1, function(error) {
-            if (error) {
-                console.log(error.message)
-                console.log('No default content')
-            } else {
-                console.log('About default content')
-            }
-        })
-    } else {
-        // nothing
-    }
-})
+    /*
+    const queryCheckIfExsistsAbout = "SELECT * FROM PageContent WHERE name='about' LIMIT 1"
+    db.get(queryCheckIfExsistsAbout, function(error, row) {
+        if (error) {
+            const queryAbout = "INSERT INTO PageContent (name, content) VALUES (?, ?)"
+            const valueAbout = ['about', 'default content']
+            db.run(queryAbout, valueAbout, function(error) {
+                if (error) {
+                    console.log(error.message)
+                    console.log('No default content')
+                } else {
+                    console.log('About default content')
+                }
+            })
+        } else {
+            // nothing
+            console.log('error about')
+        }
+    })
+    */
 
-const queryCheckIfExsistsPortfolio = "SELECT * FROM Pages WHERE name='portfolio' LIMIT 1"
-db.get(queryCheckIfExsistsPortfolio, function(error, row) {
-    if (error) {
-        const q1 = "INSERT INTO Pages (name, content) VALUES (?, ?)"
-        const v1 = ['portfolio', 'default content']
-        db.run(q1, v1, function(error) {
-            if (error) {
-                console.log(error.message)
-                console.log('No default content')
-            } else {
-                console.log('Portfolio default content')
-            }
-        })
-    } else {
-        // nothing
-    }
+   const query = "SELECT * FROM Users WHERE username = ? LIMIT 1"
+   const values = ["root"]
+       
+   db.get(query, values, function(error, user){
+       if (error) {
+           bcrypt.hash("toor123", 10, function(error, hash) {
+               if (error) {
+                   console.log("error with bcrypt hash creation please delete db and try again")
+               } else {
+                   const query = "INSERT INTO Users (username, password, created_date) VALUES (?, ?, ?)"
+                   const values = ["root", hash, Date.now()]
+                   
+                   db.run(query, values, function(error){
+                       if (error) {
+                           console.log(error.message)
+                           console.log("error with account creation please delete db and try again")
+                       } else {
+                           console.log("you can now login with username: root, password: toor123")
+                       }
+                   })
+               }
+           })
+       } else {
+           console.log("you can now login with username: root, password: toor123")
+       }
+   })
+
 })
 
 module.exports = db

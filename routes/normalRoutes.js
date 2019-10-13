@@ -126,7 +126,7 @@ normalRouter.get('/contact', csrfProtection, function(request, response) {
     response.render('contact.hbs', {csrfToken: request.csrfToken()})
 })
 
-normalRouter.post('/contact', csrfProtection, function(request, response) {
+normalRouter.post('/contact', csrfProtection, async function(request, response) {
     const validationErrors = []
 
     const validateContent = request.body.message
@@ -139,6 +139,12 @@ normalRouter.post('/contact', csrfProtection, function(request, response) {
     if (validateEmail == "") {
         validationErrors.push("email is empty")
     }
+
+    await auth.validateEmail(validateEmail, function(status) {
+        if (!status) {
+            validationErrors.push("Email is not a valid email")
+        }
+    })
 
     if (validationErrors.length > 0) {
         const model = {
@@ -175,6 +181,7 @@ normalRouter.get('/search', function(request, response) {
         } else {
             blog.getPostsFromSearch(searchQuestion, 0, function(error, Posts) {
                 if (error) {
+                    console.log(error)
                     response.render('500.hbs')
                 } else {
                     const model = {

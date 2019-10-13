@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const session = require('express-session')
 const SQLiteStore = require('connect-sqlite3')(session)
+const fileUpload = require('express-fileupload');
 
 const routes = require('./routes/routes')
 
@@ -15,6 +16,10 @@ app.engine('hbs', expressHandlebars({
 }))
 
 app.use(helmet())
+
+app.use(fileUpload({
+    safeFileNames: true 
+}));
 
 app.use(express.static('public'))
 

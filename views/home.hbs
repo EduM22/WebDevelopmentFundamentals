@@ -6,11 +6,11 @@
         {{#if Post}}
         <div class="card">
             <div class="card-header">
-                <div class="card-title h5"><a href="/post/{{Post.post_slug}}">{{Post.post_slug}}</a></div>
-                <div class="card-subtitle text-gray"><a href="/search?q={{Post.post_category}}">{{Post.post_category}}</a></div>
+                <div class="card-title h5"><a href="/post/{{Post.slug}}">{{Post.slug}}</a></div>
+                <div class="card-subtitle text-gray"><a href="/search?q={{Post.category}}">{{Post.category}}</a></div>
             </div>
             <div class="card-body" id="card-content">
-                <p id="text">{{{Post.post_content}}}</p>
+                <p id="text">{{{Post.content}}}</p>
             </div>
         </div>
         <div class="button-more-posts">

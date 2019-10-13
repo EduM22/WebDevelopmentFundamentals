@@ -1,8 +1,8 @@
 <div class="column">
     <div class="column col-11" id="blog-content">
-        <a class="btn btn-primary" href="#example-modal-1">Write a guestbook entry</a>
+        <a class="btn btn-primary" href="#modal">Write a guestbook entry</a>
 
-        <div class="modal" id="example-modal-1"><a class="modal-overlay" href="#modals" aria-label="Close"></a>
+        <div class="modal" id="modal"><a class="modal-overlay" href="#modals" aria-label="Close"></a>
             <div class="modal-container" role="document">
                 <div class="modal-header"><a class="btn btn-clear float-right" href="#modals" aria-label="Close"></a>
                     <div class="modal-title h5">Modal title</div>
@@ -24,8 +24,8 @@
 
         {{#if row.length}}
             {{#each row}}
-                <h2><a href="/guestbook-entry/{{guestbook_id}}">{{guestbook_name}}</a></h2>
-                <p>{{guestbook_content}}</p>
+                <h2><a href="/guestbook-entry/{{id}}">{{name}}</a></h2>
+                <p>{{content}}</p>
             {{/each}}
         {{else}}
             <h1>No guestbook enteries</h1>

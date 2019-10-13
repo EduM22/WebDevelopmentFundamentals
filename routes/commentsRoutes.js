@@ -109,7 +109,7 @@ commentRouter.get('/new/comment/:postId', csrfProtection, function(request, resp
     }
 })
 
-commentRouter.post('/new/comment/:postId', csrfProtection, function(request, response) {
+commentRouter.post('/new/comment/:postId', csrfProtection, async function(request, response) {
     const validationErrors = []
 
     const postId = request.params.postId
@@ -132,10 +132,17 @@ commentRouter.post('/new/comment/:postId', csrfProtection, function(request, res
         if (validateEmail == "") {
             validationErrors.push("Email is empty")
         }
+
+        await auth.validateEmail(validateEmail, function(status) {
+            if (!status) {
+                validationErrors.push("Email is not a valid email")
+            }
+        })
     
         if (validationErrors.length > 0) {
 
             const model = {
+                csrfToken: request.csrfToken(),
                 validationErrors,
                 email: validateEmail,
                 content: validateContent,
@@ -143,7 +150,7 @@ commentRouter.post('/new/comment/:postId', csrfProtection, function(request, res
                 layout: 'clean.hbs'
             }
     
-            response.render('new_post.hbs', model)
+            response.render('new_comment.hbs', model)
             
         } else {
     
@@ -151,7 +158,14 @@ commentRouter.post('/new/comment/:postId', csrfProtection, function(request, res
                 if (error) {
                     response.render('500.hbs')
                 } else {
-                    response.redirect("/comments/"+postId)
+                    blog.getPostSlugFromId(postId, function(error, slug) {
+                        if (error) {
+                            response.redirect("/")
+                        } else {
+                            response.redirect("/post/"+slug['slug'])
+                        }
+                    })
+
                 }
             })
         }

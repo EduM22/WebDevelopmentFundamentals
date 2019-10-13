@@ -7,11 +7,11 @@
             {{#each Posts}}
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title h5"><a href="/post/{{this.post_slug}}">{{this.post_slug}}</a></div>
-                        <div class="card-subtitle text-gray"><a href="/search?q={{this.post_category}}">{{this.post_category}}</a></div>
+                        <div class="card-title h5"><a href="/post/{{this.slug}}">{{this.slug}}</a></div>
+                        <div class="card-subtitle text-gray"><a href="/search?q={{this.category}}">{{this.category}}</a></div>
                     </div>
                     <div class="card-body" id="card-content">
-                        <p id="text">{{{this.post_content}}}</p>
+                        <p id="text">{{{this.content}}}</p>
                     </div>
                     <br>
                 </div>

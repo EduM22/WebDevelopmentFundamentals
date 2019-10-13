@@ -2,7 +2,7 @@ const db = require('../db')
 
 exports.getLastPost = function(callback){
 	
-    const query = "SELECT * FROM Posts ORDER BY post_id DESC LIMIT 1;"
+    const query = "SELECT * FROM BlogPosts ORDER BY id DESC LIMIT 1;"
 	
 	db.get(query, function(error, lastPost){
         if (error) {
@@ -15,7 +15,7 @@ exports.getLastPost = function(callback){
 
 exports.newPost = function(userId, slug, content, category, callback) {
 
-    const query = "INSERT INTO Posts (post_user, post_slug, post_content, post_category, post_date) VALUES (?, ?, ?, ?, ?)"
+    const query = "INSERT INTO BlogPosts (user, slug, content, category, post_date) VALUES (?, ?, ?, ?, ?)"
     const values = [userId, slug, content, category, Date.now()]
 	
 	db.run(query, values, function(error){
@@ -29,10 +29,10 @@ exports.newPost = function(userId, slug, content, category, callback) {
 
 exports.getAllPosts = function(offset, callback){
 
-    const query = "SELECT * FROM Posts ORDER BY post_id DESC LIMIT 5 OFFSET ?"
+    const query = "SELECT * FROM BlogPosts ORDER BY id DESC LIMIT 5 OFFSET ?"
     const values = [(offset * 5)]
 
-    const query2 = "SELECT COUNT(*) FROM Posts"
+    const query2 = "SELECT COUNT(*) FROM BlogPosts"
 
     
     db.all(query, values, function(error, Posts){
@@ -74,7 +74,7 @@ exports.getAllPosts = function(offset, callback){
 
 exports.getPost = function(slug, callback){
 	
-    const query = "SELECT * FROM Posts WHERE post_slug = ?"
+    const query = "SELECT * FROM BlogPosts WHERE slug = ?"
     const values = [slug]
 	
 	db.get(query, values, function(error, Post){
@@ -86,10 +86,24 @@ exports.getPost = function(slug, callback){
 	})
 }
 
+exports.getPostSlugFromId = function(id, callback){
+	
+    const query = "SELECT slug FROM BlogPosts WHERE id = ?"
+    const values = [id]
+	
+	db.get(query, values, function(error, slug){
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, slug)
+        }
+	})
+}
+
 exports.getPostsFromSearch = function(category, dateSearchOrCategory, callback) {
 
     if (dateSearchOrCategory == 0) {
-        const query = "SELECT * FROM Posts WHERE post_category = ? ORDER BY post_id DESC"
+        const query = "SELECT * FROM BlogPosts WHERE category = ? ORDER BY id DESC"
         const values = [category]
 
         db.all(query, values, function(error, Posts){
@@ -104,7 +118,7 @@ exports.getPostsFromSearch = function(category, dateSearchOrCategory, callback) 
             }
         })
     } else if (dateSearchOrCategory == 1) {
-        const query = "SELECT * FROM Posts WHERE post_date >= ? AND post_date <= ? ORDER BY post_id DESC"
+        const query = "SELECT * FROM BlogPosts WHERE post_date >= ? AND post_date <= ? ORDER BY id DESC"
         const d2 = category + 31556952000
         const values = [category, d2]
 
@@ -126,7 +140,7 @@ exports.getPostsFromSearch = function(category, dateSearchOrCategory, callback) 
 
 exports.updatePost = function(userId, slug, oldSlug, content, category, callback) {
 
-    const query = "UPDATE Posts SET post_user = ?, post_slug = ?, post_content = ?, post_category = ? WHERE post_slug = ?"
+    const query = "UPDATE BlogPosts SET user = ?, slug = ?, content = ?, category = ? WHERE slug = ?"
     const values = [userId, slug, content, category, oldSlug]
 	
 	db.run(query, values, function(error){
@@ -140,7 +154,7 @@ exports.updatePost = function(userId, slug, oldSlug, content, category, callback
 
 exports.deletePost = function(slug, callback) {
 
-    const query = "DELETE FROM Posts WHERE post_slug = ?"
+    const query = "DELETE FROM BlogPosts WHERE slug = ?"
     const values = [slug]
 
 	db.run(query, values, function(error){
@@ -160,7 +174,7 @@ exports.deletePost = function(slug, callback) {
 
 exports.getAllGuestbookEntries = function(callback) {
 
-    const query = "SELECT * FROM Guestbook ORDER BY guestbook_id DESC LIMIT 5"
+    const query = "SELECT * FROM GuestbookEntries ORDER BY id DESC LIMIT 5"
     
     db.all(query, function(error, entries){
         if (error) {
@@ -177,7 +191,7 @@ exports.getAllGuestbookEntries = function(callback) {
 
 exports.getGuestbookEntry = function(id,callback) {
 
-    const query = "SELECT * FROM Guestbook WHERE guestbook_id = ?"
+    const query = "SELECT * FROM GuestbookEntries WHERE id = ?"
     const values = [id]
     
     db.get(query, values, function(error, entry){
@@ -191,7 +205,7 @@ exports.getGuestbookEntry = function(id,callback) {
 
 exports.newGuestbookEntry = function(name, content, callback) {
 
-    const query = "INSERT INTO Guestbook (guestbook_name, guestbook_content, created_date) VALUES (?, ?, ?)"
+    const query = "INSERT INTO GuestbookEntries (name, content, post_date) VALUES (?, ?, ?)"
     const values = [name, content, Date.now()]
 	
 	db.run(query, values, function(error){
@@ -205,7 +219,7 @@ exports.newGuestbookEntry = function(name, content, callback) {
 
 exports.deleteGuestbookEntry = function(id, callback) {
 
-    const query = "DELETE FROM Guestbook WHERE guestbook_id = ?"
+    const query = "DELETE FROM GuestbookEntries WHERE id = ?"
     const values = [id]
 	
 	db.run(query, values, function(error){
@@ -219,7 +233,7 @@ exports.deleteGuestbookEntry = function(id, callback) {
 
 exports.getWebpageContent = function(webpage, callback) {
 
-    const query = "SELECT * FROM Pages WHERE name = ? LIMIT 1"
+    const query = "SELECT * FROM PageContent WHERE name = ? LIMIT 1"
     const values = [webpage]
 	
 	db.get(query, values, function(error, content){
@@ -233,7 +247,7 @@ exports.getWebpageContent = function(webpage, callback) {
 
 exports.editWebpageContent = function(webpage, content, callback) {
 
-    const query = "UPDATE Pages SET content = ? WHERE name = ?"
+    const query = "UPDATE PageContent SET content = ? WHERE name = ?"
     const values = [content, webpage]
 
 	db.run(query, values, function(error){
@@ -247,7 +261,7 @@ exports.editWebpageContent = function(webpage, content, callback) {
 
 exports.getAllComments = function(postId, callback) {
 
-    const query = "SELECT * FROM Comments WHERE post_id = ? ORDER BY comment_id DESC"
+    const query = "SELECT * FROM BlogPostComments WHERE post_id = ? ORDER BY id DESC"
     const values = [postId]
 	
 	db.all(query, values, function(error, Comments){
@@ -261,7 +275,7 @@ exports.getAllComments = function(postId, callback) {
 
 exports.getComment = function(commentId, callback) {
 
-    const query = "SELECT * FROM Comments WHERE comment_id = ?"
+    const query = "SELECT * FROM BlogPostComments WHERE id = ?"
     const values = [commentId]
 	
 	db.get(query, values, function(error, comment){
@@ -274,7 +288,7 @@ exports.getComment = function(commentId, callback) {
 }
 
 exports.newComment = function(postId, email, username, content, callback) {
-    const query = "INSERT INTO Comments (post_id, comment_email, comment_username, comment_content, comment_date) VALUES (?, ?, ?, ?, ?)"
+    const query = "INSERT INTO BlogPostComments (post_id, email, username, content, post_date) VALUES (?, ?, ?, ?, ?)"
     const values = [postId, email, username, content, Date.now()]
 	
 	db.run(query, values, function(error){
@@ -288,7 +302,7 @@ exports.newComment = function(postId, email, username, content, callback) {
 
 exports.deleteComment = function(id, callback) {
 
-    const query = "DELETE FROM Comments WHERE comment_id = ?"
+    const query = "DELETE FROM BlogPostComments WHERE id = ?"
     const values = [id]
 	
 	db.run(query, values, function(error){
@@ -302,7 +316,7 @@ exports.deleteComment = function(id, callback) {
 
 exports.deleteAllComments = function(id, callback) {
 
-    const query = "DELETE FROM Comments WHERE post_id = ?"
+    const query = "DELETE FROM BlogPostComments WHERE post_id = ?"
     const values = [id]
 	
 	db.run(query, values, function(error){
@@ -316,7 +330,7 @@ exports.deleteAllComments = function(id, callback) {
 
 exports.newContactRequest = function(email, content, callback) {
 
-    const query = "INSERT INTO Contact (contact_email, contact_content, created_date) VALUES (?, ?, ?)"
+    const query = "INSERT INTO ContactRequests (email, content, post_date) VALUES (?, ?, ?)"
     const values = [email, content, Date.now()]
 	
 	db.run(query, values, function(error){
@@ -330,7 +344,7 @@ exports.newContactRequest = function(email, content, callback) {
 
 exports.getContactRequest = function(id, callback) {
 
-    const query = "SELECT * FROM Contact WHERE contact_id = ?"
+    const query = "SELECT * FROM ContactRequests WHERE id = ?"
     const values = [id]
 	
 	db.get(query, values, function(error, ContactRequest){
@@ -344,23 +358,51 @@ exports.getContactRequest = function(id, callback) {
 
 exports.getAllContactRequests = function(callback) {
 
-    const query = "SELECT * FROM Contact ORDER BY contact_id DESC"
+    const query = "SELECT * FROM ContactRequests ORDER BY id DESC"
 	
-	db.all(query, function(error, Comments){
+	db.all(query, function(error, rows){
         if (error) {
             callback(error, null)
         } else {
-            callback(null, Comments)
+            callback(null, rows)
         }
 	})
 }
 
 exports.deleteContactRequest = function(id, callback) {
 
-    const query = "DELETE FROM Contact WHERE contact_id = ?"
+    const query = "DELETE FROM ContactRequests WHERE id = ?"
     const values = [id]
 	
 	db.run(query, values, function(error){
+        if (error) {
+            callback(error)
+        } else {
+            callback(null)
+        }
+	})
+}
+
+exports.checkFileLocation = function(id, callback) {
+
+    const query = "SELECT location FROM FileUploads WHERE name = ? LIMIT 1"
+    const values = [id]
+	
+	db.get(query, values, function(error, filelocation) {
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, filelocation)
+        }
+	})
+}
+
+exports.uploadFileLocation = function(name, location, callback) {
+
+    const query = "INSERT INTO FileUploads (name, location) VALUES (?, ?)"
+    const values = [name, location]
+	
+	db.run(query, values, function(error) {
         if (error) {
             callback(error)
         } else {

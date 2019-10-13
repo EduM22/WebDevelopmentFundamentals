@@ -5,15 +5,15 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title h6">
-                            <form action="/delete/contact-request/{{request.contact_id}}" method="POST">
+                            <form action="/delete/contact-request/{{request.id}}" method="POST">
                                 <input type="hidden" name="_csrf" value="{{csrfToken}}">
                                 <input class="btn" type="submit" value="Delete Post">
                             </form>
                         </div>
-                        <div class="card-title h5">{{request.contact_email}}</div>
+                        <div class="card-title h5">{{request.email}}</div>
                     </div>
                     <div class="card-body" id="card-content">
-                        <p id="text">{{request.contact_content}}</p>
+                        <p id="text">{{request.content}}</p>
                     </div>
                 </div>
     {{else}}

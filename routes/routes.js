@@ -7,12 +7,14 @@ const normalRoutes = require('./normalRoutes')
 const blogRoutes = require('./blogRoutes')
 const guestbookRoutes = require('./guestbookRoutes')
 const commentRoutes = require('./commentsRoutes')
+const uploadRoutes = require('./uploadRoutes')
 
 router.use(adminRoutes)
 router.use(normalRoutes)
 router.use(blogRoutes)
 router.use(guestbookRoutes)
 router.use(commentRoutes)
+router.use(uploadRoutes)
 
 /*
 error routes must be last or they will overide the other routes

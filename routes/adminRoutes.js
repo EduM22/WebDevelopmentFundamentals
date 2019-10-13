@@ -97,17 +97,6 @@ adminRouter.post('/login', auth.alreadyAuthenticated, csrfProtection, function(r
 
             auth.login(valdateUsername, validatePassword, request, function(sqlError, authError, user){
                 
-                /*
-                if (sqlError) {
-                    response.status(200).send("sql error" + sqlError)
-                } else if (authError) {
-                    response.status(200).send("auth error" + authError)
-                } else if (user) {
-                    response.status(200).send("user" + user)
-                } else {
-                    response.status(200).send("error")
-                }*/
-                
                 if(sqlError){
                     response.render("500.hbs")
                 } else if(authError) {

@@ -6,7 +6,7 @@
                 {{#if signedIn}}
                 <div class="card-header">
                     <div class="card-title h6">
-                        <form action="/delete/comment/{{comment.comment_id}}" method="POST">
+                        <form action="/delete/comment/{{comment.id}}" method="POST">
                             <input type="hidden" name="_csrf" value="{{csrfToken}}">
                             <input class="btn" type="submit" value="Delete Post">
                         </form>
@@ -14,8 +14,8 @@
                 </div>
                 {{/if}}
                 <div class="card-body" id="card-content">
-                    <h1>{{comment.comment_username}}</h1>
-                    <p>{{comment.comment_content}}</p>
+                    <h1>{{comment.username}}</h1>
+                    <p>{{comment.content}}</p>
                 </div>
             </div>
         {{else}}
