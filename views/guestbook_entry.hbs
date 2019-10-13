@@ -19,7 +19,11 @@
                 </div>
             </div>
     {{else}}
-        <h1>No contact requests</h1>
+        {{#if message}}
+        <h2>{{message}}</h2>
+        {{else}}
+        <h2>No guestbook entry</h2>
+        {{/if}}
     {{/if}}
     </div>
 </div>

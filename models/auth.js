@@ -1,12 +1,12 @@
 const db = require('../db') 
 const bcrypt = require('bcrypt')
 
-exports.login = function(username, password, request, callback){
+exports.login = function(username, password, request, callback) {
 	
     const query = "SELECT * FROM Users WHERE username = ?"
 	const values = [username]
 	
-	db.get(query, values, function(error, user){
+	db.get(query, values, function(error, user) {
         if (error) {
             callback(error, false, null)
         } else {
@@ -35,7 +35,7 @@ exports.validateEmail = function(email, callback) {
     }
 }
 
-exports.logout = function(request, callback){
+exports.logout = function(request, callback) {
     request.session.authenticated = false
     request.session.user = null
     callback(null)

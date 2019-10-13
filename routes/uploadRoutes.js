@@ -37,9 +37,12 @@ uploadRouter.post('/upload', auth.isAuthenticated, csrfProtection, function(requ
     } else {
         let uploadedFile = request.files.uploadedFile;
 
+        const fileType = uploadedFile.mimetype
+        const fileEnd = fileType.replace('image/', '')
+
         if (uploadedFile.mimetype == 'image/png' || uploadedFile.mimetype == 'image/jpg' || uploadedFile.mimetype == 'image/jpeg' || uploadedFile.mimetype == 'image/webp') {
             const hash = Date.now() + uploadedFile.md5
-            const path = ('/../public/img/'+hash+'.png')
+            const path = ('/../public/img/'+hash+'.'+fileEnd)
 
             uploadedFile.mv(__dirname + path, function(error) {
                 if (error) {
@@ -47,7 +50,17 @@ uploadRouter.post('/upload', auth.isAuthenticated, csrfProtection, function(requ
                 } else {
                     blog.uploadFileLocation(name, path, function(error) {
                         if (error) {
-                            response.render('500.hbs')
+                            if (error.code == 'SQLITE_CONSTRAINT') {
+                                validationErrors.push("You cant choose that slug name it already exsists")
+                                const model = {
+                                    validationErrors,
+                                    name,
+                                    csrfToken: request.csrfToken(),
+                                }
+                                response.render('upload.hbs', model) 
+                            } else {
+                                response.render('500.hbs')
+                            }
                         } else {
                             response.redirect('/admin')
                         }

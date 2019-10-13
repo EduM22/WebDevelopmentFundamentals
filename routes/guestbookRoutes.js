@@ -15,7 +15,6 @@ guestbookRouter.get('/guestbook', csrfProtection, function(request, response) {
         } else {
             if (entries == null) {
                 response.render('guestbook.hbs', {csrfToken: request.csrfToken()})
-                //response.send("no entries")
             } else {
                 const model = {
                     csrfToken: request.csrfToken(),
@@ -23,7 +22,6 @@ guestbookRouter.get('/guestbook', csrfProtection, function(request, response) {
                     signedIn: true
                 }
                 response.render('guestbook.hbs', model)
-                //response.send(entries)
             }
         }
     })

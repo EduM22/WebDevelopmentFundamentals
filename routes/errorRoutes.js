@@ -2,9 +2,11 @@ const express = require('express');
 const errorRouter = express.Router();
 
 errorRouter.use(function (error, request, response, next) {
-    if (error.code !== 'EBADCSRFTOKEN') return next(error)
-
-    response.status(403).send('form tampered with')
+    if (error.code !== 'EBADCSRFTOKEN') {
+        next(error)
+    } else {
+        response.status(403).send('form tampered with')
+    }
 });
 
 errorRouter.use(function(request, response, next) {
