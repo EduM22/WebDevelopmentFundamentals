@@ -281,6 +281,20 @@ exports.getComment = function(commentId, callback) {
 	})
 }
 
+exports.updateComment = function(id, username, content, callback) {
+
+    const query = "UPDATE BlogPostComments SET username = ?, content = ? WHERE id = ?"
+    const values = [username, content, id]
+	
+	db.run(query, values, function(error) {
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, this.lastID)
+        }
+	})
+}
+
 exports.newComment = function(postId, email, username, content, callback) {
     const query = "INSERT INTO BlogPostComments (post_id, email, username, content, post_date) VALUES (?, ?, ?, ?, ?)"
     const values = [postId, email, username, content, Date.now()]

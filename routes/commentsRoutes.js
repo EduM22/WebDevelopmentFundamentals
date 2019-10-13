@@ -173,4 +173,76 @@ commentRouter.post('/new/comment/:postId', csrfProtection, async function(reques
     
 })
 
+commentRouter.get('/edit/comment/:id', auth.isAuthenticated, csrfProtection, function(request, response) {
+
+    const id = request.params.id
+
+    if (id == " ") {
+        const model = {
+            title: 'New Comment',
+            message: 'You must specifie a id',
+            layout: 'clean.hbs'
+        }
+        response.render("404.hbs", model)
+    } else {
+        blog.getComment(id, function(error, comment) {
+            if (error) {
+                response.render('500.hbs')
+            } else {
+                const model = {
+                    csrfToken: request.csrfToken(),
+                    comment,
+                    layout: 'clean.hbs'
+                }
+        
+                response.render('edit_comment.hbs', model)
+            }
+        })
+    }
+})
+
+commentRouter.post('/edit/comment/:id', auth.isAuthenticated, csrfProtection, function(request, response) {
+    const validationErrors = []
+
+    const id = request.params.id
+
+    const validateContent = request.body.content
+    const validateUsername = request.body.username
+
+    if (id == "") {
+        response.render('404.hbs')
+    } else {
+        if (validateContent == "") {
+            validationErrors.push("content is empty")
+        }
+    
+        if (validateUsername == "") {
+            validationErrors.push("Name is empty")
+        }
+
+        if (validationErrors.length > 0) {
+
+            const model = {
+                csrfToken: request.csrfToken(),
+                validationErrors,
+                content: validateContent,
+                username: validateUsername,
+                layout: 'clean.hbs'
+            }
+    
+            response.render('edit_comment.hbs', model)
+            
+        } else {
+            blog.updateComment(id, validateUsername, validateContent, function(error, commentId) {
+                if (error) {
+                    response.render('500.hbs')
+                } else {
+                    response.redirect('/posts')
+                }
+            })
+        }
+    }
+    
+})
+
 module.exports = commentRouter;
