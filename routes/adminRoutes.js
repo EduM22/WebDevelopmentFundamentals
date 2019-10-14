@@ -140,7 +140,11 @@ adminRouter.post('/login', auth.alreadyAuthenticated, csrfProtection, function(r
     }
 })
 
-adminRouter.get('/logout', auth.isAuthenticated, function(request, response) {
+adminRouter.get('/logout', auth.isAuthenticated, csrfProtection, function(request, response) {
+    response.render('logout.hbs', {csrfToken: request.csrfToken()})
+});
+
+adminRouter.post('/logout', auth.isAuthenticated, csrfProtection, function(request, response) {
 
     auth.logout(request, function(error) {
         if (error) {

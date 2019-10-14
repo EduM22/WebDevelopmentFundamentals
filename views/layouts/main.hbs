@@ -25,7 +25,9 @@
           <li class="nav-item"><a href="/contact">Contact</a></li>
           <li class="nav-item"><a href="/posts">Posts</a></li>
           <li class="nav-item"><a href="/guestbook">guestbook</a></li>
-          <li class="nav-item"><a href="/donations">Support</a></li>
+          {{#if signedIn}}
+          <li class="nav-item"><a href="/admin">Admin</a></li>
+          {{/if}}
           <li class="nav-item">
             <form action="/search" method="get" class="form-nav">
               <div class="input-group input-inline">

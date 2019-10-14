@@ -36,8 +36,9 @@ exports.validateEmail = function(email, callback) {
 }
 
 exports.logout = function(request, callback) {
-    request.session.authenticated = false
-    request.session.user = null
+    request.session.destroy()
+    //request.session.authenticated = false
+    //request.session.user = null
     callback(null)
 }
 

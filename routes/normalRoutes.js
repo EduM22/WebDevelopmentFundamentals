@@ -175,6 +175,23 @@ normalRouter.post('/contact', csrfProtection, async function(request, response) 
 normalRouter.get('/search', function(request, response) {
     const searchQuestion = request.query.q
 
+    if (searchQuestion == "") {
+        response.render('search.hbs', {errorMessage: "No search question"})
+    } else {
+        blog.getPostsFromSearch(searchQuestion, function(error, Posts) {
+            if (error) {
+                response.render('500.hbs')
+            } else {
+                const model = {
+                    title: "Posts from search",
+                    Posts
+                }
+                response.render("posts.hbs", model)
+            }
+        })
+    }
+
+    /*
     if (isNaN(Date.parse(searchQuestion))) {
         if (searchQuestion == "") {
             response.send("No search question")
@@ -208,7 +225,7 @@ normalRouter.get('/search', function(request, response) {
                 }
             })
         }
-    }
+    }*/
 })
 
 module.exports = normalRouter;

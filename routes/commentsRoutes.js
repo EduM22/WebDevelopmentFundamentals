@@ -177,7 +177,7 @@ commentRouter.get('/edit/comment/:id', auth.isAuthenticated, csrfProtection, fun
 
     const id = request.params.id
 
-    if (id == " ") {
+    if (id == "") {
         const model = {
             title: 'New Comment',
             message: 'You must specifie a id',

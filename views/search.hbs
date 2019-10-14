@@ -1,10 +1,8 @@
-<h2>All Humans</h2>
-{{#if humans.length}}
-  <ul>
-    {{#each humans}}
-      <li>{{name}}</li>
-    {{/each}}
-  </ul>
-{{else}}
-  <p>No humans exist.</p>
-{{/if}}
+<div class="column">
+  <div class="column col-11">
+    {{#if errorMessage}}
+    <h3>{{errorMessage}}</h3>
+    {{/if}}
+    <p>You can search on a year, category, title or content</p>
+  </div>
+</div>

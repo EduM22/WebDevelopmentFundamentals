@@ -1,4 +1,5 @@
 const db = require('../db') 
+const Fuse = require('fuse.js')
 
 exports.getLastPost = function(callback) {
 	
@@ -99,7 +100,95 @@ exports.getPostSlugFromId = function(id, callback) {
 	})
 }
 
-exports.getPostsFromSearch = function(category, dateSearchOrCategory, callback) {
+exports.getPostsFromSearch = function(searchQuestion,  callback) {
+
+    if (!isNaN(Date.parse(searchQuestion))) {
+        const yearInMs = 31557600000
+        const query = "SELECT * FROM BlogPosts WHERE post_date >= ? AND post_date <= ? ORDER BY id DESC"
+        const inAYearFromDate = searchQuestion + yearInMs
+        const values = [Date.parse(searchQuestion), inAYearFromDate]
+
+        db.all(query, values, function(error, Posts) {
+            if (error) {
+                callback(error, null)
+            } else {
+                if (Posts.length > 0) {
+                    callback(null, Posts)
+                } else {
+                    callback(null, null)
+                }
+            }
+        })
+    } else {
+        var options = {
+            shouldSort: true,
+            threshold: 0.3,
+            location: 0,
+            distance: 100,
+            maxPatternLength: 32,
+            minMatchCharLength: 3,
+            keys: [
+              "slug",
+              "content",
+              "category",
+            ]
+          };
+    
+          const query = "SELECT * FROM BlogPosts"
+    
+          db.all(query, function(error, posts) {
+              if (error) {
+                  callback(error, null)
+              } else {
+                var fuse = new Fuse(posts, options)
+                var result = fuse.search(searchQuestion)
+          
+                callback(null, result)
+              }
+          })
+    }
+
+    /*
+
+    if (!isNaN(Date.parse(searchQuestion))) {
+        const yearInMs = 31557600000
+        const query = "SELECT * FROM BlogPosts WHERE post_date >= ? AND post_date <= ? ORDER BY id DESC"
+        const inAYearFromDate = searchQuestion + yearInMs
+        const values = [Date.parse(searchQuestion), inAYearFromDate]
+
+        db.all(query, values, function(error, Posts) {
+            if (error) {
+                callback(error, null)
+            } else {
+                if (Posts.length > 0) {
+                    callback(null, Posts)
+                } else {
+                    callback(null, null)
+                }
+            }
+        })
+    } else {
+        const querySearchSlugOrContent = "SELECT * FROM BlogPosts WHERE slug OR content OR category LIKE ?"
+        const string = new String(searchQuestion+'_')
+        console.log(string)
+        const values = [string]
+
+        db.all(querySearchSlugOrContent, values, function(error, Posts) {
+            console.log(Posts)
+            console.log(error)
+            if (error) {
+                callback(error, null)
+            } else {
+                if (Posts.length > 0) {
+                    callback(null, Posts)
+                } else {
+                    callback(null, null)
+                }
+            }
+        })
+    }*/
+
+    /*
 
     if (dateSearchOrCategory == 0) {
         const query = "SELECT * FROM BlogPosts WHERE category = ? ORDER BY id DESC"
@@ -135,7 +224,7 @@ exports.getPostsFromSearch = function(category, dateSearchOrCategory, callback) 
         })
     } else {
         callback(null, null)
-    }
+    }*/
 }
 
 exports.updatePost = function(userId, slug, oldSlug, content, category, callback) {
@@ -195,6 +284,21 @@ exports.getGuestbookEntry = function(id,callback) {
             callback(null, entry)
         }
     })
+}
+
+
+exports.updateGuestbookEntry = function(id, name, content, callback) {
+
+    const query = "UPDATE GuestbookEntries SET name = ?, content = ? WHERE id = ?"
+    const values = [name, content, id]
+	
+	db.run(query, values, function(error) {
+        if (error) {
+            callback(error, null)
+        } else {
+            callback(null, this.lastID)
+        }
+	})
 }
 
 exports.newGuestbookEntry = function(name, content, callback) {
