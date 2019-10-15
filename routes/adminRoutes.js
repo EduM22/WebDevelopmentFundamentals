@@ -2,7 +2,6 @@ const express = require('express');
 const adminRouter = express.Router();
 
 const auth = require('../models/auth')
-const blog = require('../models/blog')
 
 const csurf = require('csurf')
 
@@ -14,61 +13,6 @@ adminRouter.get('/admin', auth.isAuthenticated, function(request, response) {
     }
 
     response.render('admin.hbs', model)
-});
-
-adminRouter.get('/contact-requests', auth.isAuthenticated, function(request, response) {
-    blog.getAllContactRequests(function(error, requests) {
-        if (error) {
-            response.render('500.hbs')
-        } else {
-            const model = {
-                requests
-            }
-            response.render('contact_requests.hbs', model)
-        }
-    })
-});
-
-adminRouter.get('/contact-request', auth.isAuthenticated, function(request, response) {
-    response.redirect('/contact-requests')
-});
-
-adminRouter.get('/contact-request/:id', auth.isAuthenticated, csrfProtection, function(request, response) {
-
-    const id = request.params.id
-    
-    if (id == "") {
-        response.redirect('/contact-requests')
-    } else {
-        blog.getContactRequest(id, function(error, ContactRequest) {
-            if (error) {
-                response.render('500.hbs')
-            } else {
-                const model = {
-                    request: ContactRequest,
-                    csrfToken: request.csrfToken()
-                }
-                response.render('contact_request.hbs', model)
-            }
-        })
-    }
-});
-
-adminRouter.post('/delete/contact-request/:id', auth.isAuthenticated, csrfProtection, function(request, response) {
-
-    const id = request.params.id
-    
-    if (id == "") {
-        response.redirect('/contact-requests', {csrfToken: request.csrfToken()})
-    } else {
-        blog.deleteContactRequest(id, function(error) {
-            if (error) {
-                response.render('500.hbs')
-            } else {
-                response.redirect('/contact-requests')
-            }
-        })
-    }
 });
 
 adminRouter.get('/login', auth.alreadyAuthenticated, csrfProtection, function(request, response) {

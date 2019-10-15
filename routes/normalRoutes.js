@@ -121,57 +121,6 @@ normalRouter.post('/edit/:page', auth.isAuthenticated, csrfProtection, function(
 
 })
 
-
-normalRouter.get('/contact', csrfProtection, function(request, response) {
-    response.render('contact.hbs', {csrfToken: request.csrfToken()})
-})
-
-normalRouter.post('/contact', csrfProtection, async function(request, response) {
-    const validationErrors = []
-
-    const validateContent = request.body.message
-    const validateEmail = request.body.email
-
-    if (validateContent == "") {
-        validationErrors.push("content is empty")
-    }
-
-    if (validateEmail == "") {
-        validationErrors.push("email is empty")
-    }
-
-    await auth.validateEmail(validateEmail, function(status) {
-        if (!status) {
-            validationErrors.push("Email is not a valid email")
-        }
-    })
-
-    if (validationErrors.length > 0) {
-        const model = {
-            validationErrors,
-            csrfToken: request.csrfToken()
-        }
-
-        response.render('contact.hbs', model)
-        
-    } else {
-
-        blog.newContactRequest(validateEmail, validateContent, function(error) {
-            if (error) {
-                response.render('500.hbs')
-            } else {
-                const model = {
-                    message: "Success",
-                    csrfToken: request.csrfToken()
-                }
-                response.render('contact.hbs', model)
-            }
-        })
-
-    }
-})
-
-
 normalRouter.get('/search', function(request, response) {
     const searchQuestion = request.query.q
 
@@ -191,41 +140,6 @@ normalRouter.get('/search', function(request, response) {
         })
     }
 
-    /*
-    if (isNaN(Date.parse(searchQuestion))) {
-        if (searchQuestion == "") {
-            response.send("No search question")
-        } else {
-            blog.getPostsFromSearch(searchQuestion, 0, function(error, Posts) {
-                if (error) {
-                    console.log(error)
-                    response.render('500.hbs')
-                } else {
-                    const model = {
-                        title: "Posts from search",
-                        Posts
-                    }
-                    response.render("posts.hbs", model)
-                }
-            })
-        }
-    } else {
-        if (searchQuestion == "") {
-            response.send("No search question")
-        } else {
-            blog.getPostsFromSearch(Date.parse(searchQuestion), 1, function(error, Posts) {
-                if (error) {
-                    response.render('500.hbs')
-                } else {
-                    const model = {
-                        title: "Posts from search",
-                        Posts
-                    }
-                    response.render("posts.hbs", model)
-                }
-            })
-        }
-    }*/
 })
 
 module.exports = normalRouter;

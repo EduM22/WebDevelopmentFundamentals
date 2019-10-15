@@ -3,8 +3,7 @@
         <h1>contact</h1>
         {{#if message}}
             <h3>{{message}}</h3>
-        {{/if}}
-
+        {{else}}
         {{#if validationErrors.length}}
 
         <ul>
@@ -18,11 +17,11 @@
         <fieldset>
             <div class="form-group">
             <label class="form-label" for="input-example-19">Email</label>
-            <input class="form-input is-error" type="email" id="input-example-19" placeholder="email" name="email" value="{{email}}" required>
+            <input class="form-input is-error" type="email" id="input-example-19" placeholder="email" name="email" value="{{validateEmail}}" required>
             </div>
             <div class="form-group">
             <label class="form-label" for="input-example-20">Message</label>
-            <textarea class="form-input is-error" id="input-example-20" placeholder="Textarea" rows="10" name="message" required>{{message}}</textarea>
+            <textarea class="form-input is-error" id="input-example-20" placeholder="Textarea" rows="10" name="message" required>{{validateContent}}</textarea>
             </div>
         </fieldset>
         <div class="form-group">
@@ -49,6 +48,7 @@
             </div>
         </form>
 
+        {{/if}}
         {{/if}}
     </div>
 </div>

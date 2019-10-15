@@ -10,6 +10,15 @@
                                 <input class="btn" type="submit" value="Delete Post">
                             </form>
                         </div>
+                        {{#if request.seenIt}}
+                        {{else}}
+                        <div class="card-title h6">
+                            <form action="/contact-request/mark-as-seen/{{request.id}}" method="POST">
+                                <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                                <input class="btn" type="submit" value="Mark as seen">
+                            </form>
+                        </div>
+                        {{/if}}
                         <div class="card-title h5">{{request.email}}</div>
                     </div>
                     <div class="card-body" id="card-content">

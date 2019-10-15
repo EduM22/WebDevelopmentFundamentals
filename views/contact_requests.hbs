@@ -1,19 +1,21 @@
-{{#if requests.length}}
-    <div class="column">
+<div class="column">
+    <div class="column col-11" id="blog-content">
+    {{#if requests.length}}
+        <a href="/contact-requests?seenit=0" class="btn">See only the one you dont have marked as seen</a>
+        <a href="/contact-requests?seenit=1" class="btn">See only the one you have have marked as seen</a>
     {{#each requests}}
-        <div class="column col-11" id="blog-content">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title h5"><a href="/contact-request/{{this.id}}">{{this.email}}</a></div>
-                </div>
-                <div class="card-body" id="card-content">
-                    <p id="text">{{this.content}}</p>
-                </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title h5"><a href="/contact-request/{{this.id}}">{{this.email}}</a></div>
+            </div>
+            <div class="card-body" id="card-content">
+                <p id="text">{{this.content}}</p>
             </div>
         </div>
         <br>
     {{/each}}
+    {{else}}
+        <h1>No contact requests</h1>
+    {{/if}}
     </div>
-{{else}}
-    <h1>No contact requests</h1>
-{{/if}}
+</div>

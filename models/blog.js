@@ -16,8 +16,9 @@ exports.getLastPost = function(callback) {
 
 exports.newPost = function(userId, slug, content, category, callback) {
 
+    const date = new Date()
     const query = "INSERT INTO BlogPosts (user, slug, content, category, post_date) VALUES (?, ?, ?, ?, ?)"
-    const values = [userId, slug, content, category, Date.now()]
+    const values = [userId, slug, content, category, date]
 	
 	db.run(query, values, function(error) {
         if (error) {
@@ -102,10 +103,39 @@ exports.getPostSlugFromId = function(id, callback) {
 
 exports.getPostsFromSearch = function(searchQuestion,  callback) {
 
+    /*
+    var options = {
+        shouldSort: true,
+        threshold: 0.3,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 2,
+        keys: [
+          "slug",
+          "content",
+          "category",
+          "post_date"
+        ]
+    };
+    
+    const query = "SELECT * FROM BlogPosts"
+    
+    db.all(query, function(error, posts) {
+        if (error) {
+            callback(error, null)
+        } else {
+            var fuse = new Fuse(posts, options)
+            var result = fuse.search(searchQuestion)
+      
+            callback(null, result)
+        }
+    })*/
+    
     if (!isNaN(Date.parse(searchQuestion))) {
         const yearInMs = 31557600000
-        const query = "SELECT * FROM BlogPosts WHERE post_date >= ? AND post_date <= ? ORDER BY id DESC"
-        const inAYearFromDate = searchQuestion + yearInMs
+        const query = "SELECT * FROM BlogPosts WHERE post_date BETWEEN ? AND ? ORDER BY id DESC"
+        const inAYearFromDate = Date.parse(searchQuestion) + yearInMs
         const values = [Date.parse(searchQuestion), inAYearFromDate]
 
         db.all(query, values, function(error, Posts) {
@@ -130,22 +160,22 @@ exports.getPostsFromSearch = function(searchQuestion,  callback) {
             keys: [
               "slug",
               "content",
-              "category",
+              "category"
             ]
-          };
+        };
     
-          const query = "SELECT * FROM BlogPosts"
+        const query = "SELECT * FROM BlogPosts"
     
-          db.all(query, function(error, posts) {
-              if (error) {
-                  callback(error, null)
-              } else {
+        db.all(query, function(error, posts) {
+            if (error) {
+                callback(error, null)
+            } else {
                 var fuse = new Fuse(posts, options)
                 var result = fuse.search(searchQuestion)
           
                 callback(null, result)
-              }
-          })
+            }
+        })
     }
 
     /*
@@ -303,8 +333,9 @@ exports.updateGuestbookEntry = function(id, name, content, callback) {
 
 exports.newGuestbookEntry = function(name, content, callback) {
 
+    const date = new Date()
     const query = "INSERT INTO GuestbookEntries (name, content, post_date) VALUES (?, ?, ?)"
-    const values = [name, content, Date.now()]
+    const values = [name, content, date]
 	
 	db.run(query, values, function(error) {
         if (error) {
@@ -400,8 +431,9 @@ exports.updateComment = function(id, username, content, callback) {
 }
 
 exports.newComment = function(postId, email, username, content, callback) {
+    const date = new Date()
     const query = "INSERT INTO BlogPostComments (post_id, email, username, content, post_date) VALUES (?, ?, ?, ?, ?)"
-    const values = [postId, email, username, content, Date.now()]
+    const values = [postId, email, username, content, date]
 	
 	db.run(query, values, function(error) {
         if (error) {
@@ -441,9 +473,9 @@ exports.deleteAllComments = function(id, callback) {
 }
 
 exports.newContactRequest = function(email, content, callback) {
-
+    const date = new Date()
     const query = "INSERT INTO ContactRequests (email, content, post_date) VALUES (?, ?, ?)"
-    const values = [email, content, Date.now()]
+    const values = [email, content, date]
 	
 	db.run(query, values, function(error) {
         if (error) {
@@ -477,6 +509,47 @@ exports.getAllContactRequests = function(callback) {
             callback(error, null)
         } else {
             callback(null, rows)
+        }
+	})
+}
+
+exports.getAllContactRequestsSeenOrNot = function(seenOrNot, callback) {
+
+    if (seenOrNot == 0) {
+        const query = "SELECT * FROM ContactRequests WHERE seenIt = ? ORDER BY id DESC"
+        const values = [0]
+	
+        db.all(query, values, function(error, rows) {
+            if (error) {
+                callback(error, null)
+            } else {
+                callback(null, rows)
+            }
+        })
+    } else {
+        const query = "SELECT * FROM ContactRequests WHERE seenIt = ? ORDER BY id DESC"
+        const values = [1]
+	
+        db.all(query, values, function(error, rows) {
+            if (error) {
+                callback(error, null)
+            } else {
+                callback(null, rows)
+            }
+        })
+    }
+}
+
+exports.markContactRequestAsSeen = function(id, callback) {
+
+    const query = "UPDATE ContactRequests SET seenIt = ? WHERE id = ?"
+    const values = [1, id]
+	
+	db.run(query, values, function(error) {
+        if (error) {
+            callback(error)
+        } else {
+            callback(null)
         }
 	})
 }

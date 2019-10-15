@@ -90,6 +90,7 @@ const db = new sqlite3.Database('db-blog.db', (error) => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,\
             email TEXT NOT NULL,\
             content TEXT NOT NULL,\
+            seenIt INT DEFAULT 0,\
             post_date DATE NOT NULL)", function(error) {
             if (error) {
                 console.log(error.message)
