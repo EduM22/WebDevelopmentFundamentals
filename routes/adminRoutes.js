@@ -2,7 +2,6 @@ const express = require('express');
 const adminRouter = express.Router();
 
 const auth = require('../models/auth')
-
 const csurf = require('csurf')
 
 const csrfProtection = csurf()

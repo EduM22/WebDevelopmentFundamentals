@@ -31,8 +31,9 @@ exports.newPost = function(userId, slug, content, category, callback) {
 
 exports.getAllPosts = function(offset, callback) {
 
+    const numberToGet = 5
     const query = "SELECT * FROM BlogPosts ORDER BY id DESC LIMIT 5 OFFSET ?"
-    const values = [(offset * 5)]
+    const values = [(offset * numberToGet)]
 
     const query2 = "SELECT COUNT(*) FROM BlogPosts"
 
@@ -46,7 +47,7 @@ exports.getAllPosts = function(offset, callback) {
                     if (error) {
                         callback(null, Posts, null, null)
                     } else {
-                        if (amount['COUNT(*)'] > (parseInt(offset)+1)*5) {
+                        if (amount['COUNT(*)'] > (parseInt(offset)+1)*numberToGet) {
                             if (parseInt(offset) > 0) {
                                 callback(null, Posts, "/posts?page="+(parseInt(offset)-1), "/posts?page="+(parseInt(offset)+1))
                             } else {
@@ -65,7 +66,6 @@ exports.getAllPosts = function(offset, callback) {
                         }
                     }
                 })
-                // old = callback(null, Posts)
             } else {
                 callback(null, null, null, null)
             }
