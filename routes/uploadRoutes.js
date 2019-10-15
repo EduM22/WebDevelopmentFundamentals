@@ -95,7 +95,6 @@ uploadRouter.get('/file/:fileId', function(request, response) {
                     if (error) {
                         response.render('404.hbs')
                     } else {
-    
                         response.setHeader('Content-type', 'image/png')
                         response.send(fileContent)
                     }
