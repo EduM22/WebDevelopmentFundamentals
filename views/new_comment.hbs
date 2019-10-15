@@ -1,50 +1,54 @@
-{{#if validationErrors.length}}
+<div class="column">
+    <div class="column col-11 col-sm-12">
+    {{#if validationErrors.length}}
 
-<ul>
-    {{#each validationErrors}}
-    <li>{{this}}</li>
-    {{/each}}
-</ul>
+    <ul>
+        {{#each validationErrors}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ul>
 
-<form action="" method="POST">
-<input type="hidden" name="_csrf" value="{{csrfToken}}">
-<fieldset>
-    <div class="form-group">
-      <label class="form-label" for="input-email">Email</label>
-      <input class="form-input is-error" type="email" id="input-email" placeholder="Email" name="email" value="{{email}}" required>
-    </div>
-    <div class="form-group">
-      <label class="form-label" for="input-username">Display name</label>
-      <input class="form-input is-error" type="text" id="input-username" placeholder="Username" name="username" value="{{username}}" required>
-    </div>
-    <div class="form-group">
-      <label class="form-label" for="input-content">Message</label>
-      <textarea class="form-input is-error" id="input-content" placeholder="Textarea" rows="10" name="content" required>{{content}}</textarea>
-    </div>
-</fieldset>
-  <div class="form-group">
-        <input class="form-submit" type="submit" placeholder="New comment">
-    </div>
-</form>
-{{else}}
-<form action="" method="POST">
-<input type="hidden" name="_csrf" value="{{csrfToken}}">
-<fieldset>
-    <div class="form-group">
-      <label class="form-label" for="input-email">Email</label>
-      <input class="form-input" type="email" id="input-email" placeholder="Email" name="email" required>
-    </div>
-    <div class="form-group">
-      <label class="form-label" for="input-username">Display name</label>
-      <input class="form-input" type="text" id="input-username" placeholder="Username" name="username" required>
-    </div>
-    <div class="form-group">
-      <label class="form-label" for="input-content">Message</label>
-      <textarea class="form-input" id="input-content" placeholder="Textarea" rows="10" name="content" required></textarea>
-    </div>
-</fieldset>
-  <div class="form-group">
-        <input class="form-submit" type="submit" placeholder="New comment">
-    </div>
-</form>
-{{/if}}
+    <form action="" method="POST">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <fieldset>
+        <div class="form-group">
+          <label class="form-label" for="input-email">Email</label>
+          <input class="form-input is-error" type="email" id="input-email" placeholder="Email" name="email" value="{{email}}" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="input-username">Display name</label>
+          <input class="form-input is-error" type="text" id="input-username" placeholder="Username" name="username" value="{{username}}" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="input-content">Message</label>
+          <textarea class="form-input is-error" id="input-content" placeholder="Textarea" rows="10" name="content" required>{{content}}</textarea>
+        </div>
+    </fieldset>
+      <div class="form-group">
+            <input class="form-submit" type="submit" placeholder="New comment">
+        </div>
+    </form>
+    {{else}}
+    <form action="" method="POST">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <fieldset>
+        <div class="form-group">
+          <label class="form-label" for="input-email">Email</label>
+          <input class="form-input" type="email" id="input-email" placeholder="Email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="input-username">Display name</label>
+          <input class="form-input" type="text" id="input-username" placeholder="Username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="input-content">Message</label>
+          <textarea class="form-input" id="input-content" placeholder="Textarea" rows="10" name="content" required></textarea>
+        </div>
+    </fieldset>
+      <div class="form-group">
+            <input class="form-submit" type="submit" placeholder="New comment">
+        </div>
+    </form>
+    {{/if}}
+  </div>
+</div>

@@ -1,43 +1,47 @@
-{{#if validationErrors.length}}
+<div class="column">
+    <div class="column col-11 col-sm-12">
+    {{#if validationErrors.length}}
 
-<ul>
-    {{#each validationErrors}}
-    <li>{{this}}</li>
-    {{/each}}
-</ul>
+    <ul>
+        {{#each validationErrors}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ul>
 
-<form action="" method="POST">
-<input type="hidden" name="_csrf" value="{{csrfToken}}">
-<fieldset>
-    <div class="form-group">
-        <h3>{{page.name}}</h3>
-    </div>
-    <div class="form-group">
-      <label class="form-label" for="page-content">Message</label>
-      <textarea class="form-input is-error" id="page-content" placeholder="Textarea" rows="10" name="content">{{page.content}}</textarea>
-    </div>
-  </fieldset>
-  <div class="form-group">
-        <input class="form-submit" type="submit" placeholder="Login">
-    </div>
-</form>
-
-{{else}}
-
-<form action="" method="POST">
-<input type="hidden" name="_csrf" value="{{csrfToken}}">
-  <fieldset>
-    <div class="form-group">
-        <h3>{{page.name}}</h3>
-    </div>
-    <div class="form-group">
+    <form action="" method="POST">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <fieldset>
+        <div class="form-group">
+            <h3>{{page.name}}</h3>
+        </div>
+        <div class="form-group">
         <label class="form-label" for="page-content">Message</label>
-        <textarea class="form-input" id="page-content" placeholder="Textarea" rows="10" name="content">{{page.content}}</textarea>
-    </div>
-  </fieldset>
-  <div class="form-group">
-        <input class="form-submit" type="submit" placeholder="Login">
-    </div>
-</form>
+        <textarea class="form-input is-error" id="page-content" placeholder="Textarea" rows="10" name="content">{{page.content}}</textarea>
+        </div>
+    </fieldset>
+    <div class="form-group">
+            <input class="form-submit" type="submit" placeholder="Login">
+        </div>
+    </form>
 
-{{/if}}
+    {{else}}
+
+    <form action="" method="POST">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <fieldset>
+        <div class="form-group">
+            <h3>{{page.name}}</h3>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="page-content">Message</label>
+            <textarea class="form-input" id="page-content" placeholder="Textarea" rows="10" name="content">{{page.content}}</textarea>
+        </div>
+    </fieldset>
+    <div class="form-group">
+            <input class="form-submit" type="submit" placeholder="Login">
+        </div>
+    </form>
+
+    {{/if}}
+    </div>
+</div>

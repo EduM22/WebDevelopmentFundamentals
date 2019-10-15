@@ -43,8 +43,6 @@ exports.logout = function(request, callback) {
             callback(null)
         }
     })
-    //request.session.authenticated = false
-    //request.session.user = null
 }
 
 exports.isAuthenticated = function (request, response, next) {

@@ -1,5 +1,5 @@
 <div class="column">
-    <div class="column col-11" id="blog-content">
+    <div class="column col-11 col-sm-12">
         <button class="btn btn-primary"><a href="/posts">Go back</a></button>
     {{#if Post}}
         <div class="card">
@@ -19,7 +19,7 @@
             </div>
             {{/if}}
             <div class="card-body" id="card-content">
-                <p id="text">{{{Post.content}}}</p>
+                <p>{{{Post.content}}}</p>
             </div>
             <div class="card-footer">
                 <button class="btn btn-primary"><a href="/new/comment/{{Post.id}}">Comment</a></button>

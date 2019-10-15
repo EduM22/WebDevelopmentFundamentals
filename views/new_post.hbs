@@ -1,62 +1,66 @@
-{{#if validationErrors.length}}
+<div class="column">
+    <div class="column col-11 col-sm-12">
+    {{#if validationErrors.length}}
 
-<ul>
-    {{#each validationErrors}}
-    <li>{{this}}</li>
-    {{/each}}
-</ul>
+    <ul>
+        {{#each validationErrors}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ul>
 
-<form action="/new/post" method="POST">
-<input type="hidden" name="_csrf" value="{{csrfToken}}">
-  <fieldset>
+    <form action="/new/post" method="POST">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <fieldset>
+        <div class="form-group">
+        <label class="form-label" for="input-example-19">Slug</label>
+        <input class="form-input is-error" type="text" id="input-example-19" placeholder="url name" name="slug" value="{{slug}}">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="category-select">Category</label>
+            <select class="form-select is-error" id="category-select" name="category" value="{{category}}">
+                <option>Choose an category</option>
+                <option>All</option>
+                <option>Tech</option>
+                <option>Random</option>
+            </select>
+        </div>
+        <div class="form-group">
+        <label class="form-label" for="input-example-20">Message</label>
+        <textarea class="form-input is-error" id="input-example-20" placeholder="Textarea" rows="10" name="content" value="">{{content}}</textarea>
+        </div>
+    </fieldset>
     <div class="form-group">
-      <label class="form-label" for="input-example-19">Slug</label>
-      <input class="form-input is-error" type="text" id="input-example-19" placeholder="url name" name="slug" value="{{slug}}">
-    </div>
-    <div class="form-group">
-        <label class="form-label" for="category-select">Category</label>
-        <select class="form-select is-error" id="category-select" name="category" value="{{category}}">
-            <option>Choose an category</option>
-            <option>All</option>
-            <option>Tech</option>
-            <option>Random</option>
-        </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label" for="input-example-20">Message</label>
-      <textarea class="form-input is-error" id="input-example-20" placeholder="Textarea" rows="10" name="content" value="">{{content}}</textarea>
-    </div>
-  </fieldset>
-  <div class="form-group">
-        <input class="btn" type="submit" value="Upload">
-    </div>
-</form>
+            <input class="btn" type="submit" value="Upload">
+        </div>
+    </form>
 
-{{else}}
+    {{else}}
 
-<form action="/new/post" method="POST">
-<input type="hidden" name="_csrf" value="{{csrfToken}}">
-<fieldset>
+    <form action="/new/post" method="POST">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <fieldset>
+        <div class="form-group">
+        <label class="form-label" for="input-example-19">Slug</label>
+        <input class="form-input" type="text" id="input-example-19" placeholder="url name" name="slug">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="category-select">Category</label>
+            <select class="form-select" id="category-select" name="category">
+                <option>All</option>
+                <option>Tech</option>
+                <option>Random</option>
+            </select>
+        </div>
+        <div class="form-group">
+        <label class="form-label" for="input-example-20">Message</label>
+        <textarea class="form-input" id="input-example-20" placeholder="Textarea" rows="10" name="content"></textarea>
+        </div>
+    </fieldset>
     <div class="form-group">
-      <label class="form-label" for="input-example-19">Slug</label>
-      <input class="form-input" type="text" id="input-example-19" placeholder="url name" name="slug">
-    </div>
-    <div class="form-group">
-        <label class="form-label" for="category-select">Category</label>
-        <select class="form-select" id="category-select" name="category">
-            <option>All</option>
-            <option>Tech</option>
-            <option>Random</option>
-        </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label" for="input-example-20">Message</label>
-      <textarea class="form-input" id="input-example-20" placeholder="Textarea" rows="10" name="content"></textarea>
-    </div>
-</fieldset>
-  <div class="form-group">
-        <input class="btn" type="submit" value="Upload">
-    </div>
-</form>
+            <input class="btn" type="submit" value="Upload">
+        </div>
+    </form>
 
-{{/if}}
+    {{/if}}
+    </div>
+</div>

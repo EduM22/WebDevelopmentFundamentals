@@ -1,5 +1,5 @@
  <div class="column">
-      <div class="column col-11">
+      <div class="column col-11 col-sm-12">
         {{#if message}}
             <h3>{{message}}</h3>
         {{/if}}
@@ -11,7 +11,7 @@
                         <div class="card-subtitle text-gray"><a href="/search?q={{this.category}}">{{this.category}}</a></div>
                     </div>
                     <div class="card-body" id="card-content">
-                        <p id="text">{{{this.content}}}</p>
+                        <p>{{{this.content}}}</p>
                     </div>
                     <br>
                 </div>

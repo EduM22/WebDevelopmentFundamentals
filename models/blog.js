@@ -102,35 +102,6 @@ exports.getPostSlugFromId = function(id, callback) {
 }
 
 exports.getPostsFromSearch = function(searchQuestion,  callback) {
-
-    /*
-    var options = {
-        shouldSort: true,
-        threshold: 0.3,
-        location: 0,
-        distance: 100,
-        maxPatternLength: 32,
-        minMatchCharLength: 2,
-        keys: [
-          "slug",
-          "content",
-          "category",
-          "post_date"
-        ]
-    };
-    
-    const query = "SELECT * FROM BlogPosts"
-    
-    db.all(query, function(error, posts) {
-        if (error) {
-            callback(error, null)
-        } else {
-            var fuse = new Fuse(posts, options)
-            var result = fuse.search(searchQuestion)
-      
-            callback(null, result)
-        }
-    })*/
     
     if (!isNaN(Date.parse(searchQuestion))) {
         const yearInMs = 31557600000
@@ -178,83 +149,6 @@ exports.getPostsFromSearch = function(searchQuestion,  callback) {
         })
     }
 
-    /*
-
-    if (!isNaN(Date.parse(searchQuestion))) {
-        const yearInMs = 31557600000
-        const query = "SELECT * FROM BlogPosts WHERE post_date >= ? AND post_date <= ? ORDER BY id DESC"
-        const inAYearFromDate = searchQuestion + yearInMs
-        const values = [Date.parse(searchQuestion), inAYearFromDate]
-
-        db.all(query, values, function(error, Posts) {
-            if (error) {
-                callback(error, null)
-            } else {
-                if (Posts.length > 0) {
-                    callback(null, Posts)
-                } else {
-                    callback(null, null)
-                }
-            }
-        })
-    } else {
-        const querySearchSlugOrContent = "SELECT * FROM BlogPosts WHERE slug OR content OR category LIKE ?"
-        const string = new String(searchQuestion+'_')
-        console.log(string)
-        const values = [string]
-
-        db.all(querySearchSlugOrContent, values, function(error, Posts) {
-            console.log(Posts)
-            console.log(error)
-            if (error) {
-                callback(error, null)
-            } else {
-                if (Posts.length > 0) {
-                    callback(null, Posts)
-                } else {
-                    callback(null, null)
-                }
-            }
-        })
-    }*/
-
-    /*
-
-    if (dateSearchOrCategory == 0) {
-        const query = "SELECT * FROM BlogPosts WHERE category = ? ORDER BY id DESC"
-        const values = [category]
-
-        db.all(query, values, function(error, Posts) {
-            if (error) {
-                callback(error, null)
-            } else {
-                if (Posts.length > 0) {
-                    callback(null, Posts)
-                } else {
-                    callback(null, null)
-                }
-            }
-        })
-    } else if (dateSearchOrCategory == 1) {
-        const yearInMs = 31556952000
-        const query = "SELECT * FROM BlogPosts WHERE post_date >= ? AND post_date <= ? ORDER BY id DESC"
-        const d2 = category + yearInMs
-        const values = [category, d2]
-
-        db.all(query, values, function(error, Posts) {
-            if (error) {
-                callback(error, null)
-            } else {
-                if (Posts.length > 0) {
-                    callback(null, Posts)
-                } else {
-                    callback(null, null)
-                }
-            }
-        })
-    } else {
-        callback(null, null)
-    }*/
 }
 
 exports.updatePost = function(userId, slug, oldSlug, content, category, callback) {
