@@ -36,10 +36,15 @@ exports.validateEmail = function(email, callback) {
 }
 
 exports.logout = function(request, callback) {
-    request.session.destroy()
+    request.session.destroy(function(error) {
+        if (error) {
+            callback(error)
+        } else {
+            callback(null)
+        }
+    })
     //request.session.authenticated = false
     //request.session.user = null
-    callback(null)
 }
 
 exports.isAuthenticated = function (request, response, next) {
