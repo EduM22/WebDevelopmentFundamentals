@@ -118,7 +118,21 @@ blogRouter.post('/edit/post/:slug', auth.isAuthenticated, csrfProtection, functi
 
         blog.updatePost(request.session.user.uid, validateSlug, oldSlug, validateContent, validateCategory, function(error, postId) {
             if (error) {
-                response.render('500.hbs')
+                if (error.code == 'SQLITE_CONSTRAINT') {
+                    validationErrors.push("You cant choose that slug name it already exsists")
+                    const model = {
+                        validationErrors,
+                        content: validateContent,
+                        slug: validateSlug,
+                        category: validateCategory,
+                        csrfToken: request.csrfToken(),
+                        layout: 'clean.hbs'
+                    }
+            
+                    response.render('edit_post.hbs', model)
+                } else {
+                    response.render('500.hbs')
+                }
             } else {
                 response.redirect("/post/"+validateSlug)
             }
