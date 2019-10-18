@@ -1,0 +1,17 @@
+ <div class="column">
+      <div class="column col-11 col-sm-12">
+        {{#if message}}
+            <h3>{{message}}</h3>
+        {{/if}}
+        {{#if files.length}}
+            <h3>include in a post with img src="" were src is /file/{name}</h3>
+            <ul>
+            {{#each files}}
+                <li>File name : <a href="/file/{{this.name}}">{{this.name}}</a></li>
+            {{/each}}
+            </ul>
+        {{else}}
+        <h1>No files uploded</h1>
+        {{/if}}
+    </div>
+</div>

@@ -142,4 +142,16 @@ normalRouter.get('/search', function(request, response) {
 
 })
 
+normalRouter.get('/get-all-uploaded-files', auth.isAuthenticated, function(request, response) {
+
+    blog.getAllUploadedFiles(function (error, files) {
+        if (error) {
+            response.render('500.hbs')
+        } else {
+            response.render('all_uploded_files.hbs', {files})
+        }
+    })
+
+})
+
 module.exports = normalRouter;

@@ -31,23 +31,23 @@ exports.newPost = function(userId, slug, content, category, callback) {
 
 exports.getAllPosts = function(offset, callback) {
 
-    const numberToGet = 5
-    const query = "SELECT * FROM BlogPosts ORDER BY id DESC LIMIT 5 OFFSET ?"
-    const values = [(offset * numberToGet)]
+    const numberOffPostsToGet = 5
+    const queryGetPosts = "SELECT * FROM BlogPosts ORDER BY id DESC LIMIT 5 OFFSET ?"
+    const values = [(offset * numberOffPostsToGet)]
 
-    const query2 = "SELECT COUNT(*) FROM BlogPosts"
+    const queryNumberOfRows = "SELECT COUNT(*) FROM BlogPosts"
 
     
-    db.all(query, values, function(error, Posts) {
+    db.all(queryGetPosts, values, function(error, Posts) {
         if (error) {
             callback(error, null, null, null)
         } else {
             if (Posts.length > 0) {
-                db.get(query2, function(error, amount) {
+                db.get(queryNumberOfRows, function(error, amount) {
                     if (error) {
                         callback(null, Posts, null, null)
                     } else {
-                        if (amount['COUNT(*)'] > (parseInt(offset)+1)*numberToGet) {
+                        if (amount['COUNT(*)'] > (parseInt(offset)+1)*numberOffPostsToGet) {
                             if (parseInt(offset) > 0) {
                                 callback(null, Posts, "/posts?page="+(parseInt(offset)-1), "/posts?page="+(parseInt(offset)+1))
                             } else {
@@ -488,4 +488,13 @@ exports.uploadFileLocation = function(name, location, callback) {
             callback(null)
         }
 	})
+}
+
+exports.getAllUploadedFiles = function(callback) {
+
+    const query = "SELECT name FROM FileUploads"
+    
+    db.all(query, function(error, entries) {
+        callback(error, entries)
+    })
 }
