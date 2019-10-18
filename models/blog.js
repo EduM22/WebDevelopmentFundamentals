@@ -6,11 +6,7 @@ exports.getLastPost = function(callback) {
     const query = "SELECT * FROM BlogPosts ORDER BY id DESC LIMIT 1;"
 	
 	db.get(query, function(error, lastPost) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, lastPost)
-        }
+        callback(error, lastPost)
 	})
 }
 
@@ -21,15 +17,14 @@ exports.newPost = function(userId, slug, content, category, callback) {
     const values = [userId, slug, content, category, date]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, this.lastID)
-        }
+        callback(error, this.lastID)
 	})
 }
 
-exports.getAllPosts = function(offset, callback) {
+exports.getAllPosts = function(offsetUser, callback) {
+
+    const offset = (parseInt(offsetUser) - 1)
+    const nextPageIdPlusValue = 2
 
     const numberOffPostsToGet = 5
     const queryGetPosts = "SELECT * FROM BlogPosts ORDER BY id DESC LIMIT 5 OFFSET ?"
@@ -37,7 +32,6 @@ exports.getAllPosts = function(offset, callback) {
 
     const queryNumberOfRows = "SELECT COUNT(*) FROM BlogPosts"
 
-    
     db.all(queryGetPosts, values, function(error, Posts) {
         if (error) {
             callback(error, null, null, null)
@@ -49,16 +43,20 @@ exports.getAllPosts = function(offset, callback) {
                     } else {
                         if (amount['COUNT(*)'] > (parseInt(offset)+1)*numberOffPostsToGet) {
                             if (parseInt(offset) > 0) {
-                                callback(null, Posts, "/posts?page="+(parseInt(offset)-1), "/posts?page="+(parseInt(offset)+1))
+                                if ((parseInt(offset)-1) <= 0) {
+                                    callback(null, Posts, "/posts", "/posts?page="+(parseInt(offset)+nextPageIdPlusValue))
+                                } else {
+                                    callback(null, Posts, "/posts?page="+(parseInt(offset)), "/posts?page="+(parseInt(offset)+nextPageIdPlusValue))
+                                }
                             } else {
-                                callback(null, Posts, null, "/posts?page="+(parseInt(offset)+1))
+                                callback(null, Posts, null, "/posts?page="+(parseInt(offset)+nextPageIdPlusValue))
                             }
                         } else {
                             if (parseInt(offset) > 0) {
-                                if (parseInt(offset)-1 <= 0) {
+                                if ((parseInt(offset)-1) <= 0) {
                                     callback(null, Posts, "/posts", null)
                                 } else {
-                                    callback(null, Posts, "/posts?page="+(parseInt(offset)-1), null)
+                                    callback(null, Posts, "/posts?page="+(parseInt(offset)), null)
                                 }
                             } else {
                                 callback(null, Posts, null, null)
@@ -79,11 +77,7 @@ exports.getPost = function(slug, callback) {
     const values = [slug]
 	
 	db.get(query, values, function(error, Post) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, Post)
-        }
+        callback(error, Post)
 	})
 }
 
@@ -93,34 +87,13 @@ exports.getPostSlugFromId = function(id, callback) {
     const values = [id]
 	
 	db.get(query, values, function(error, slug) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, slug)
-        }
+        callback(error, slug)
 	})
 }
 
-exports.getPostsFromSearch = function(searchQuestion,  callback) {
-    
-    if (!isNaN(Date.parse(searchQuestion))) {
-        const yearInMs = 31557600000
-        const query = "SELECT * FROM BlogPosts WHERE post_date BETWEEN ? AND ? ORDER BY id DESC"
-        const inAYearFromDate = Date.parse(searchQuestion) + yearInMs
-        const values = [Date.parse(searchQuestion), inAYearFromDate]
+exports.getPostsFromSearch = function(searchQuestion, dateOne, dateTwo,  callback) {
 
-        db.all(query, values, function(error, Posts) {
-            if (error) {
-                callback(error, null)
-            } else {
-                if (Posts.length > 0) {
-                    callback(null, Posts)
-                } else {
-                    callback(null, null)
-                }
-            }
-        })
-    } else {
+    if (dateOne != null || dateTwo != null) {
         var options = {
             shouldSort: true,
             threshold: 0.3,
@@ -135,18 +108,62 @@ exports.getPostsFromSearch = function(searchQuestion,  callback) {
             ]
         };
     
-        const query = "SELECT * FROM BlogPosts"
+        const query = "SELECT * FROM BlogPosts WHERE post_date BETWEEN ? AND ? ORDER BY id DESC"
+        const values = [Date.parse(dateOne), Date.parse(dateTwo)]
     
-        db.all(query, function(error, posts) {
-            if (error) {
-                callback(error, null)
+        db.all(query, values, function(error, posts) {
+            if (searchQuestion == null || !searchQuestion) {
+                callback(error, posts)
             } else {
-                var fuse = new Fuse(posts, options)
-                var result = fuse.search(searchQuestion)
-          
-                callback(null, result)
+                if (error) {
+                    callback(error, null)
+                } else {
+                    var fuse = new Fuse(posts, options)
+                    var result = fuse.search(searchQuestion)
+              
+                    callback(null, result)
+                }
             }
+
         })
+    } else {
+        if (!isNaN(Date.parse(searchQuestion))) {
+            const yearInMs = 31557600000
+            const query = "SELECT * FROM BlogPosts WHERE post_date BETWEEN ? AND ? ORDER BY id DESC"
+            const inAYearFromDate = Date.parse(searchQuestion) + yearInMs
+            const values = [Date.parse(searchQuestion), inAYearFromDate]
+    
+            db.all(query, values, function(error, Posts) {
+                callback(error, Posts)
+            })
+        } else {
+            var options = {
+                shouldSort: true,
+                threshold: 0.3,
+                location: 0,
+                distance: 100,
+                maxPatternLength: 32,
+                minMatchCharLength: 3,
+                keys: [
+                  "slug",
+                  "content",
+                  "category"
+                ]
+            };
+        
+            const query = "SELECT * FROM BlogPosts"
+        
+            db.all(query, function(error, posts) {
+                if (error) {
+                    callback(error, null)
+                } else {
+                    var fuse = new Fuse(posts, options)
+                    var result = fuse.search(searchQuestion)
+              
+                    callback(null, result)
+                }
+            })
+        }
     }
 
 }
@@ -157,11 +174,7 @@ exports.updatePost = function(userId, slug, oldSlug, content, category, callback
     const values = [userId, slug, content, category, oldSlug]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, this.lastID)
-        }
+        callback(error, this.lastID)
 	})
 }
 
@@ -171,11 +184,7 @@ exports.deletePost = function(slug, callback) {
     const values = [slug]
 
 	db.run(query, values, function(error, id) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, this.lastID)
-        }
+        callback(error, id)
 	})
 }
 
@@ -184,29 +193,17 @@ exports.getAllGuestbookEntries = function(callback) {
     const query = "SELECT * FROM GuestbookEntries ORDER BY id DESC LIMIT 5"
     
     db.all(query, function(error, entries) {
-        if (error) {
-            callback(error, null)
-        } else {
-            if (entries.length > 0) {
-                callback(null, entries)
-            } else {
-                callback(null, null)
-            }
-        }
+        callback(error, entries)
     })
 }
 
-exports.getGuestbookEntry = function(id,callback) {
+exports.getGuestbookEntry = function(id, callback) {
 
     const query = "SELECT * FROM GuestbookEntries WHERE id = ?"
     const values = [id]
     
     db.get(query, values, function(error, entry) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, entry)
-        }
+        callback(error, entry)
     })
 }
 
@@ -217,11 +214,7 @@ exports.updateGuestbookEntry = function(id, name, content, callback) {
     const values = [name, content, id]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, this.lastID)
-        }
+        callback(error, this.lastID)
 	})
 }
 
@@ -232,11 +225,7 @@ exports.newGuestbookEntry = function(name, content, callback) {
     const values = [name, content, date]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, this.lastID)
-        }
+        callback(error, this.lastID)
 	})
 }
 
@@ -246,11 +235,7 @@ exports.deleteGuestbookEntry = function(id, callback) {
     const values = [id]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error)
-        } else {
-            callback(null)
-        }
+        callback(error)
 	})
 }
 
@@ -260,11 +245,7 @@ exports.getWebpageContent = function(webpage, callback) {
     const values = [webpage]
 	
 	db.get(query, values, function(error, content) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, content)
-        }
+        callback(error, content)
 	})
 }
 
@@ -274,11 +255,7 @@ exports.editWebpageContent = function(webpage, content, callback) {
     const values = [content, webpage]
 
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error)
-        } else {
-            callback(null)
-        }
+        callback(error)
 	})
 }
 
@@ -288,11 +265,7 @@ exports.getAllComments = function(postId, callback) {
     const values = [postId]
 	
 	db.all(query, values, function(error, Comments) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, Comments)
-        }
+        callback(error, Comments)
 	})
 }
 
@@ -302,11 +275,7 @@ exports.getComment = function(commentId, callback) {
     const values = [commentId]
 	
 	db.get(query, values, function(error, comment) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, comment)
-        }
+        callback(error, comment)
 	})
 }
 
@@ -316,11 +285,7 @@ exports.updateComment = function(id, username, content, callback) {
     const values = [username, content, id]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, this.lastID)
-        }
+        callback(error, this.lastID)
 	})
 }
 
@@ -330,11 +295,7 @@ exports.newComment = function(postId, email, username, content, callback) {
     const values = [postId, email, username, content, date]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, this)
-        }
+        callback(error)
 	})
 }
 
@@ -344,11 +305,7 @@ exports.deleteComment = function(id, callback) {
     const values = [id]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error)
-        } else {
-            callback(null)
-        }
+        callback(error)
 	})
 }
 
@@ -358,11 +315,7 @@ exports.deleteAllComments = function(id, callback) {
     const values = [id]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error)
-        } else {
-            callback(null)
-        }
+        callback(error)
 	})
 }
 
@@ -372,11 +325,7 @@ exports.newContactRequest = function(email, content, callback) {
     const values = [email, content, date]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error)
-        } else {
-            callback(null)
-        }
+        callback(error)
 	})
 }
 
@@ -386,11 +335,7 @@ exports.getContactRequest = function(id, callback) {
     const values = [id]
 	
 	db.get(query, values, function(error, ContactRequest) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, ContactRequest)
-        }
+        callback(error, ContactRequest)
 	})
 }
 
@@ -399,11 +344,7 @@ exports.getAllContactRequests = function(callback) {
     const query = "SELECT * FROM ContactRequests ORDER BY id DESC"
 	
 	db.all(query, function(error, rows) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, rows)
-        }
+        callback(error, rows)
 	})
 }
 
@@ -414,22 +355,14 @@ exports.getAllContactRequestsSeenOrNot = function(seenOrNot, callback) {
         const values = [0]
 	
         db.all(query, values, function(error, rows) {
-            if (error) {
-                callback(error, null)
-            } else {
-                callback(null, rows)
-            }
+            callback(error, rows)
         })
     } else {
         const query = "SELECT * FROM ContactRequests WHERE seenIt = ? ORDER BY id DESC"
         const values = [1]
 	
         db.all(query, values, function(error, rows) {
-            if (error) {
-                callback(error, null)
-            } else {
-                callback(null, rows)
-            }
+            callback(error, rows)
         })
     }
 }
@@ -440,11 +373,7 @@ exports.markContactRequestAsSeen = function(id, callback) {
     const values = [1, id]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error)
-        } else {
-            callback(null)
-        }
+        callback(error)
 	})
 }
 
@@ -454,11 +383,7 @@ exports.deleteContactRequest = function(id, callback) {
     const values = [id]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error)
-        } else {
-            callback(null)
-        }
+        callback(error)
 	})
 }
 
@@ -468,11 +393,7 @@ exports.checkFileLocation = function(id, callback) {
     const values = [id]
 	
 	db.get(query, values, function(error, filelocation) {
-        if (error) {
-            callback(error, null)
-        } else {
-            callback(null, filelocation)
-        }
+        callback(error, filelocation)
 	})
 }
 
@@ -482,11 +403,7 @@ exports.uploadFileLocation = function(name, location, callback) {
     const values = [name, location]
 	
 	db.run(query, values, function(error) {
-        if (error) {
-            callback(error)
-        } else {
-            callback(null)
-        }
+        callback(error)
 	})
 }
 

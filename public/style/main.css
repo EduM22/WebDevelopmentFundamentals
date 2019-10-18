@@ -138,7 +138,8 @@ a {
 
 @media(max-width: 600px) {
     .column {
-        margin-left: 3%;
+        margin-left: 2%;
+        margin-right: 4%;
     }
 }
 

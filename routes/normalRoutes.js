@@ -123,22 +123,31 @@ normalRouter.post('/edit/:page', auth.isAuthenticated, csrfProtection, function(
 
 normalRouter.get('/search', function(request, response) {
     const searchQuestion = request.query.q
+    let dateOne = request.query.d1
+    let dateTwo = request.query.d2
+    
+    if (!dateOne) {
+        dateOne = null
+    }
+    if (!dateTwo) {
+        dateTwo = null
+    }
 
-    if (searchQuestion == "") {
-        response.render('search.hbs', {errorMessage: "No search question"})
-    } else {
-        blog.getPostsFromSearch(searchQuestion, function(error, Posts) {
-            if (error) {
-                response.render('500.hbs')
-            } else {
+    blog.getPostsFromSearch(searchQuestion, dateOne, dateTwo, function(error, Posts) {
+        if (error) {
+            response.render('500.hbs')
+        } else {
+            if (Posts.length > 0) {
                 const model = {
                     title: "Posts from search",
                     Posts
                 }
                 response.render("posts.hbs", model)
+            } else {
+                response.render('search.hbs', {errorMessage: "No posts on that search"})
             }
-        })
-    }
+        }
+    })
 
 })
 

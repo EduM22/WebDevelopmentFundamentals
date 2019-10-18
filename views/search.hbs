@@ -3,6 +3,23 @@
     {{#if errorMessage}}
     <h3>{{errorMessage}}</h3>
     {{/if}}
-    <p>You can search on category, title, content or a year and get all post made in that year</p>
+    <p>You can search on category, title, content, post between dates or a year and get all post made in that year</p>
+    <form action="/search" method="GET">
+      <div class="form-group">
+        <label class="form-label" for="search-q">search question</label>
+        <input class="form-input" type="text" id="search-q" placeholder="search" name="q">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="date-1">date one</label>
+        <input class="form-input" type="date" id="date-1" placeholder="first date" name="d1">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="date-2">Date two</label>
+        <input class="form-input" type="date" id="date-2" placeholder="secound date" name="d2">
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary input-group-btn">Search</button>
+      </div>
+    </form>
   </div>
 </div>

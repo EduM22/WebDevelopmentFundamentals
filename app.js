@@ -40,7 +40,6 @@ app.use(bodyParser.urlencoded({
 app.use(function(request, response, next){
 	
     response.locals.signedIn = request.session.authenticated
-
 	next()
 	
 })

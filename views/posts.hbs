@@ -11,14 +11,14 @@
                         <div class="card-subtitle text-gray"><a href="/search?q={{this.category}}">{{this.category}}</a></div>
                     </div>
                     <div class="card-body" id="card-content">
-                        <p>{{{this.content}}}</p>
+                        {{{this.content}}}
                     </div>
                     <br>
                 </div>
             {{/each}}
             {{#if lastUrl}}
             <div class="button-more-posts">
-                <a href="{{lastUrl}}" class="btn btn-primary">last page</a>
+                <a href="{{lastUrl}}" class="btn btn-primary">previous page</a>
             </div>
             {{/if}}
             <br>

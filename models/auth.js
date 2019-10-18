@@ -49,7 +49,7 @@ exports.isAuthenticated = function (request, response, next) {
     if (request.session.authenticated && request.session.user != null) {
         return next();
     }
-
+    response.status(401)
     response.redirect('/')
 }
 

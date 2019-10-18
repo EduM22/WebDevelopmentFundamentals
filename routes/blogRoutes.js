@@ -185,7 +185,7 @@ blogRouter.get('/posts', function(request, response) {
 
     var page = request.query.page
     if (page == "" || page == null) {
-        page = 0
+        page = 1
     }
 
     blog.getAllPosts(page, function(error, Posts, lastUrl, nextUrl) {
